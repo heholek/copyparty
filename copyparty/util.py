@@ -495,6 +495,15 @@ def py_desc() -> str:
     )
 
 
+def expat_ver() -> str:
+    try:
+        import pyexpat
+
+        return ".".join([str(x) for x in pyexpat.version_info])
+    except:
+        return "?"
+
+
 def _sqlite_ver() -> str:
     assert sqlite3  # type: ignore  # !rm
     try:

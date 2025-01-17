@@ -20,7 +20,8 @@ def _parse(txt):
 
 
 class TestDXML(unittest.TestCase):
-    def test1(self):
+    def test_qbe(self):
+        # allowed by default; verify that we stopped it
         txt = r"""<!DOCTYPE qbe [
 <!ENTITY a "nice_bakuretsu">
 ]>
@@ -28,7 +29,8 @@ class TestDXML(unittest.TestCase):
         _parse(txt)
         ET.fromstring(txt)
 
-    def test2(self):
+    def test_ent_file(self):
+        # NOT allowed by default; should still be blocked
         txt = r"""<!DOCTYPE ext [
 <!ENTITY ee SYSTEM "file:///bin/bash">
 ]>
@@ -39,6 +41,25 @@ class TestDXML(unittest.TestCase):
             raise Exception("unsafe2")
         except ET.ParseError:
             pass
+
+    def test_ent_ext(self):
+        # NOT allowed by default; should still be blocked
+        txt = r"""<!DOCTYPE ext [
+<!ENTITY ee SYSTEM "http://example.com/a.xml">
+]>
+<root>&ee;</root>"""
+        _parse(txt)
+
+    def test_dtd(self):
+        # allowed by default; verify that we stopped it
+        txt = r"""<!DOCTYPE d SYSTEM "a.dtd">
+<root>a</root>"""
+        _parse(txt)
+        ET.fromstring(txt)
+
+    ##
+    ## end of negative/security tests; the rest is functional
+    ##
 
     def test3(self):
         txt = r"""<?xml version="1.0" ?>

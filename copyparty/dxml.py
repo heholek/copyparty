@@ -1,3 +1,6 @@
+# coding: utf-8
+from __future__ import print_function, unicode_literals
+
 import importlib
 import sys
 import xml.etree.ElementTree as ET
@@ -6,6 +9,10 @@ from .__init__ import PY2
 
 if True:  # pylint: disable=using-constant-test
     from typing import Any, Optional
+
+
+class BadXML(Exception):
+    pass
 
 
 def get_ET() -> ET.XMLParser:
@@ -34,7 +41,7 @@ def get_ET() -> ET.XMLParser:
 XMLParser: ET.XMLParser = get_ET()
 
 
-class DXMLParser(XMLParser):  # type: ignore
+class _DXMLParser(XMLParser):  # type: ignore
     def __init__(self) -> None:
         tb = ET.TreeBuilder()
         super(DXMLParser, self).__init__(target=tb)
@@ -49,14 +56,52 @@ class DXMLParser(XMLParser):  # type: ignore
         raise BadXML("{}, {}".format(a, ka))
 
 
-class BadXML(Exception):
-    pass
+class _NG(XMLParser):  # type: ignore
+    def __int__(self) -> None:
+        raise BadXML("dxml selftest failed")
+
+
+DXMLParser = _DXMLParser
 
 
 def parse_xml(txt: str) -> ET.Element:
     parser = DXMLParser()
     parser.feed(txt)
     return parser.close()  # type: ignore
+
+
+def selftest() -> bool:
+    qbe = r"""<!DOCTYPE d [
+<!ENTITY a "nice_bakuretsu">
+]>
+<root>&a;&a;&a;</root>"""
+
+    emb = r"""<!DOCTYPE d [
+<!ENTITY a SYSTEM "file:///etc/hostname">
+]>
+<root>&a;</root>"""
+
+    # future-proofing; there's never been any known vulns
+    # regarding DTDs and ET.XMLParser, but might as well
+    # block them since webdav-clients don't use them
+    dtd = r"""<!DOCTYPE d SYSTEM "a.dtd">
+<root>a</root>"""
+
+    for txt in (qbe, emb, dtd):
+        try:
+            parse_xml(txt)
+            t = "WARNING: dxml selftest failed:\n%s\n"
+            print(t % (txt,), file=sys.stderr)
+            return False
+        except BadXML:
+            pass
+
+    return True
+
+
+DXML_OK = selftest()
+if not DXML_OK:
+    DXMLParser = _NG
 
 
 def mktnod(name: str, text: str) -> ET.Element:

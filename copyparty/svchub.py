@@ -61,6 +61,7 @@ from .util import (
     alltrace,
     ansi_re,
     build_netmap,
+    expat_ver,
     load_ipu,
     min_ex,
     mp,
@@ -695,6 +696,15 @@ class SvcHub(object):
             self.log("root", t, 3)
             if self.args.bauth_last:
                 self.log("root", "WARNING: ignoring --bauth-last due to --no-bauth", 3)
+
+        if not self.args.no_dav:
+            from .dxml import DXML_OK
+
+            if not DXML_OK:
+                if not self.args.no_dav:
+                    self.args.no_dav = True
+                    t = "WARNING:\nDisabling WebDAV support because dxml selftest failed. Please report this bug;\n%s\n...and include the following information in the bug-report:\n%s | expat %s\n"
+                    self.log("root", t % (URL_BUG, VERSIONS, expat_ver()), 1)
 
     def _process_config(self) -> bool:
         al = self.args
