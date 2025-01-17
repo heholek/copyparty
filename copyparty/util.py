@@ -229,6 +229,10 @@ META_NOBOTS = '<meta name="robots" content="noindex, nofollow">\n'
 
 FFMPEG_URL = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z"
 
+URL_PRJ = "https://github.com/9001/copyparty"
+
+URL_BUG = URL_PRJ + "/issues/new?labels=bug&template=bug_report.md"
+
 HTTPCODE = {
     200: "OK",
     201: "Created",

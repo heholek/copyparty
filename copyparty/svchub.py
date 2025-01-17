@@ -50,6 +50,7 @@ from .util import (
     FFMPEG_URL,
     HAVE_PSUTIL,
     HAVE_SQLITE3,
+    URL_BUG,
     UTC,
     VERSIONS,
     Daemon,

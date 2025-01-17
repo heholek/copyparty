@@ -54,6 +54,8 @@ from .util import (
     RAM_TOTAL,
     SQLITE_VER,
     UNPLICATIONS,
+    URL_BUG,
+    URL_PRJ,
     Daemon,
     align_tab,
     ansi_re,
@@ -332,17 +334,16 @@ def ensure_webdeps() -> None:
     if has_resource(E, "web/deps/mini-fa.woff"):
         return
 
-    warn(
-        """could not find webdeps;
+    t = """could not find webdeps;
   if you are running the sfx, or exe, or pypi package, or docker image,
   then this is a bug! Please let me know so I can fix it, thanks :-)
-  https://github.com/9001/copyparty/issues/new?labels=bug&template=bug_report.md
+  %s
 
   however, if you are a dev, or running copyparty from source, and you want
   full client functionality, you will need to build or obtain the webdeps:
-  https://github.com/9001/copyparty/blob/hovudstraum/docs/devnotes.md#building
+  %s/blob/hovudstraum/docs/devnotes.md#building
     """
-    )
+    warn(t % (URL_BUG, URL_PRJ))
 
 
 def configure_ssl_ver(al: argparse.Namespace) -> None:
@@ -1476,7 +1477,7 @@ def add_ui(ap, retry):
     ap2.add_argument("--txt-max", metavar="KiB", type=int, default=64, help="max size of embedded textfiles on ?doc= (anything bigger will be lazy-loaded by JS)")
     ap2.add_argument("--doctitle", metavar="TXT", type=u, default="copyparty @ --name", help="title / service-name to show in html documents")
     ap2.add_argument("--bname", metavar="TXT", type=u, default="--name", help="server name (displayed in filebrowser document title)")
-    ap2.add_argument("--pb-url", metavar="URL", type=u, default="https://github.com/9001/copyparty", help="powered-by link; disable with \033[33m-np\033[0m")
+    ap2.add_argument("--pb-url", metavar="URL", type=u, default=URL_PRJ, help="powered-by link; disable with \033[33m-np\033[0m")
     ap2.add_argument("--ver", action="store_true", help="show version on the control panel (incompatible with \033[33m-nb\033[0m)")
     ap2.add_argument("--k304", metavar="NUM", type=int, default=0, help="configure the option to enable/disable k304 on the controlpanel (workaround for buggy reverse-proxies); [\033[32m0\033[0m] = hidden and default-off, [\033[32m1\033[0m] = visible and default-off, [\033[32m2\033[0m] = visible and default-on")
     ap2.add_argument("--no304", metavar="NUM", type=int, default=0, help="configure the option to enable/disable no304 on the controlpanel (workaround for buggy caching in browsers); [\033[32m0\033[0m] = hidden and default-off, [\033[32m1\033[0m] = visible and default-off, [\033[32m2\033[0m] = visible and default-on")
