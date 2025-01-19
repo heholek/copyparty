@@ -4905,7 +4905,8 @@ class Up2k(object):
             except:
                 pass
 
-        xbu = self.flags[job["ptop"]].get("xbu")
+        vf = self.flags[job["ptop"]]
+        xbu = vf.get("xbu")
         ap_chk = djoin(pdir, job["name"])
         vp_chk = djoin(job["vtop"], job["prel"], job["name"])
         if xbu:
@@ -4935,7 +4936,7 @@ class Up2k(object):
                 if x:
                     zvfs = vfs
                     pdir, _, job["name"], (vfs, rem) = x
-                    job["vcfg"] = vfs.flags
+                    job["vcfg"] = vf = vfs.flags
                     job["ptop"] = vfs.realpath
                     job["vtop"] = vfs.vpath
                     job["prel"] = rem
@@ -4985,8 +4986,13 @@ class Up2k(object):
                 fs = self.fstab.get(pdir)
                 if fs == "ok":
                     pass
-                elif "sparse" in self.flags[job["ptop"]]:
-                    t = "volflag 'sparse' is forcing use of sparse files for uploads to [%s]"
+                elif "nosparse" in vf:
+                    t = "volflag 'nosparse' is preventing creation of sparse files for uploads to [%s]"
+                    self.log(t % (job["ptop"],))
+                    relabel = True
+                    sprs = False
+                elif "sparse" in vf:
+                    t = "volflag 'sparse' is forcing creation of sparse files for uploads to [%s]"
                     self.log(t % (job["ptop"],))
                     relabel = True
                 else:

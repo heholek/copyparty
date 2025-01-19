@@ -1545,11 +1545,15 @@ connecting to an aws s3 bucket and similar
 
 there is no built-in support for this, but you can use FUSE-software such as [rclone](https://rclone.org/) / [geesefs](https://github.com/yandex-cloud/geesefs) / [JuiceFS](https://juicefs.com/en/) to first mount your cloud storage as a local disk, and then let copyparty use (a folder in) that disk as a volume
 
-you may experience poor upload performance this way, but that can sometimes be fixed by specifying the volflag `sparse` to force the use of sparse files; this has improved the upload speeds from `1.5 MiB/s` to over `80 MiB/s` in one case, but note that you are also more likely to discover funny bugs in your FUSE software this way, so buckle up
+you will probably get decent speeds with the default config, however most likely restricted to using one TCP connection per file, so the upload-client won't be able to send multiple chunks in parallel
+
+> before [v1.13.5](https://github.com/9001/copyparty/releases/tag/v1.13.5) it was recommended to use the volflag `sparse` to force-allow multiple chunks in parallel; this would improve the upload-speed from `1.5 MiB/s` to over `80 MiB/s` at the risk of provoking latent bugs in S3 or JuiceFS. But v1.13.5 added chunk-stitching, so this is now probably much less important. On the contrary, `nosparse` *may* now increase performance in some cases. Please try all three options (default, `sparse`, `nosparse`) as the optimal choice depends on your network conditions and software stack (both the FUSE-driver and cloud-server)
 
 someone has also tested geesefs in combination with [gocryptfs](https://nuetzlich.net/gocryptfs/) with surprisingly good results, getting 60 MiB/s upload speeds on a gbit line, but JuiceFS won with 80 MiB/s using its built-in encryption
 
 you may improve performance by specifying larger values for `--iobuf` / `--s-rd-sz` / `--s-wr-sz`
+
+> if you've experimented with this and made interesting observations, please share your findings so we can add a section with specific recommendations :-)
 
 
 ## hiding from google
