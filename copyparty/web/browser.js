@@ -241,7 +241,7 @@ var Ls = {
 		"cut_nag": "OS notification when upload completes$N(only if the browser or tab is not active)",
 		"cut_sfx": "audible alert when upload completes$N(only if the browser or tab is not active)",
 
-		"cut_mt": "use multithreading to accelerate file hashing$N$Nthis uses web-workers and requires$Nmore RAM (up to 512 MiB extra)$N$N30% faster https, 4.5x faster http,$Nand 5.3x faster on android phones\">mt",
+		"cut_mt": "use multithreading to accelerate file hashing$N$Nthis uses web-workers and requires$Nmore RAM (up to 512 MiB extra)$N$Nmakes https 30% faster, http 4.5x faster\">mt",
 
 		"cft_text": "favicon text (blank and refresh to disable)",
 		"cft_fg": "foreground color",
@@ -830,7 +830,7 @@ var Ls = {
 		"cut_nag": "meldingsvarsel når opplastning er ferdig$N(kun on nettleserfanen ikke er synlig)",
 		"cut_sfx": "lydvarsel når opplastning er ferdig$N(kun on nettleserfanen ikke er synlig)",
 
-		"cut_mt": "raskere befaring ved å bruke hele CPU'en$N$Ndenne funksjonen anvender web-workers$Nog krever mer RAM (opptil 512 MiB ekstra)$N$N30% raskere https, 4.5x raskere http,$Nog 5.3x raskere på android-telefoner\">mt",
+		"cut_mt": "raskere befaring ved å bruke hele CPU'en$N$Ndenne funksjonen anvender web-workers$Nog krever mer RAM (opptil 512 MiB ekstra)$N$Ngjør https 30% raskere, http 4.5x raskere\">mt",
 
 		"cft_text": "ikontekst (blank ut og last siden på nytt for å deaktivere)",
 		"cft_fg": "farge",
@@ -1419,7 +1419,7 @@ var Ls = {
 		"cut_nag": "上传完成时的操作系统通知$N（仅当浏览器或标签页不活跃时）",
 		"cut_sfx": "上传完成时的声音警报$N（仅当浏览器或标签页不活跃时）",
 
-		"cut_mt": "使用多线程加速文件哈希$N$N这使用 Web Worker 并且需要更多内存（额外最多 512 MiB）$N$N比https快30%，http快4.5倍，比Android 手机快5.3倍\">mt",
+		"cut_mt": "使用多线程加速文件哈希$N$N这使用 Web Worker 并且需要更多内存（额外最多 512 MiB）$N$N这使得 https 快 30%，http 快 4.5 倍\">mt",
 
 		"cft_text": "网站图标文本（为空并刷新以禁用）",
 		"cft_fg": "前景色",
