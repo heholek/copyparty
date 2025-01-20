@@ -132,6 +132,8 @@ NO_CACHE = {"Cache-Control": "no-cache"}
 
 ALL_COOKIES = "k304 no304 js idxh dots cppwd cppws".split()
 
+BADXFF = " due to dangerous misconfiguration (the http-header specified by --xff-hdr was received from an untrusted reverse-proxy)"
+
 H_CONN_KEEPALIVE = "Connection: Keep-Alive"
 H_CONN_CLOSE = "Connection: Close"
 
@@ -161,6 +163,8 @@ class HttpCli(object):
 
     def __init__(self, conn: "HttpConn") -> None:
         assert conn.sr  # !rm
+
+        empty_stringlist: list[str] = []
 
         self.t0 = time.time()
         self.conn = conn
@@ -207,9 +211,7 @@ class HttpCli(object):
         self.trailing_slash = True
         self.uname = " "
         self.pw = " "
-        self.rvol = [" "]
-        self.wvol = [" "]
-        self.avol = [" "]
+        self.rvol = self.wvol = self.avol = empty_stringlist
         self.do_log = True
         self.can_read = False
         self.can_write = False
@@ -390,6 +392,7 @@ class HttpCli(object):
                     ) + "0.0/16"
                     zs2 = ' or "--xff-src=lan"' if self.conn.xff_lan.map(pip) else ""
                     self.log(t % (self.args.xff_hdr, pip, cli_ip, zso, zs, zs2), 3)
+                    self.bad_xff = True
                 else:
                     self.ip = cli_ip
                     self.is_vproxied = bool(self.args.R)
@@ -5003,8 +5006,16 @@ class HttpCli(object):
             and (self.uname in vol.axs.uread or self.uname in vol.axs.upget)
         }
 
+        bad_xff = hasattr(self, "bad_xff")
+        if bad_xff:
+            allvols = []
+            t = "will not return list of recent uploads" + BADXFF
+            self.log(t, 1)
+            if self.avol:
+                raise Pebkac(500, t)
+
         x = self.conn.hsrv.broker.ask(
-            "up2k.get_unfinished_by_user", self.uname, self.ip
+            "up2k.get_unfinished_by_user", self.uname, "" if bad_xff else self.ip
         )
         uret = x.get()
 
@@ -5399,12 +5410,16 @@ class HttpCli(object):
         if self.args.no_del:
             raise Pebkac(403, "the delete feature is disabled in server config")
 
+        unpost = "unpost" in self.uparam
+        if unpost and hasattr(self, "bad_xff"):
+            self.log("unpost was denied" + BADXFF, 1)
+            raise Pebkac(403, "the delete feature is disabled in server config")
+
         if not req:
             req = [self.vpath]
         elif self.is_vproxied:
             req = [x[len(self.args.SR) :] for x in req]
 
-        unpost = "unpost" in self.uparam
         nlim = int(self.uparam.get("lim") or 0)
         lim = [nlim, nlim] if nlim else []
 
