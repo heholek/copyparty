@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import print_function, unicode_literals
 
-S_VERSION = "2.7"
-S_BUILD_DT = "2024-12-06"
+S_VERSION = "2.8"
+S_BUILD_DT = "2025-01-21"
 
 """
 u2c.py: upload to copyparty
@@ -1249,7 +1249,7 @@ class Ctl(object):
                         for n, zsii in enumerate(file.cids)
                     ]
                     print("chs: %s\n%s" % (vp, "\n".join(zsl)))
-                zsl = [self.ar.wsalt, str(file.size)] + [x[0] for x in file.kchunks]
+                zsl = [self.ar.wsalt, str(file.size)] + [x[0] for x in file.cids]
                 zb = hashlib.sha512("\n".join(zsl).encode("utf-8")).digest()[:33]
                 wark = ub64enc(zb).decode("utf-8")
                 if self.ar.jw:
