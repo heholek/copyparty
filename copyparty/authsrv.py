@@ -2339,6 +2339,7 @@ class AuthSrv(object):
                 "frand": bool(vf.get("rand")),
                 "lifetime": vf.get("lifetime") or 0,
                 "unlist": vf.get("unlist") or "",
+                "sb_lg": "" if "no_sb_lg" in vf else (vf.get("lg_sbf") or "y"),
             }
             js_htm = {
                 "s_name": self.args.bname,
@@ -2351,6 +2352,8 @@ class AuthSrv(object):
                 "have_unpost": int(self.args.unpost),
                 "have_emp": self.args.emp,
                 "sb_md": "" if "no_sb_md" in vf else (vf.get("md_sbf") or "y"),
+                "sba_md": vf.get("md_sba") or "",
+                "sba_lg": vf.get("lg_sba") or "",
                 "txt_ext": self.args.textfiles.replace(",", " "),
                 "def_hcols": list(vf.get("mth") or []),
                 "unlist0": vf.get("unlist") or "",

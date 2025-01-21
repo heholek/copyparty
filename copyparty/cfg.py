@@ -74,6 +74,8 @@ def vf_vmap() -> dict[str, str]:
         "html_head",
         "lg_sbf",
         "md_sbf",
+        "lg_sba",
+        "md_sba",
         "nrand",
         "og_desc",
         "og_site",
@@ -241,6 +243,8 @@ flagcats = {
         "sb_lg": "enable js sandbox for prologue/epilogue (default)",
         "md_sbf": "list of markdown-sandbox safeguards to disable",
         "lg_sbf": "list of *logue-sandbox safeguards to disable",
+        "md_sba": "value of iframe allow-prop for markdown-sandbox",
+        "lg_sba": "value of iframe allow-prop for *logue-sandbox",
         "nohtml": "return html and markdown as text/html",
     },
     "others": {

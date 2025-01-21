@@ -7667,9 +7667,9 @@ var treectl = (function () {
 		if (lg1 === Ls.eng.f_empty)
 			lg1 = L.f_empty;
 
-		sandbox(ebi('pro'), sb_lg, '', lg0);
+		sandbox(ebi('pro'), sb_lg, sba_lg,'', lg0);
 		if (dirchg)
-			sandbox(ebi('epi'), sb_lg, '', lg1);
+			sandbox(ebi('epi'), sb_lg, sba_lg, '', lg1);
 
 		clmod(ebi('pro'), 'mdo');
 		clmod(ebi('epi'), 'mdo');
@@ -7680,7 +7680,7 @@ var treectl = (function () {
 		if (md1)
 			show_readme(md1, 1);
 		else if (!dirchg)
-			sandbox(ebi('epi'), sb_lg, '', lg1);
+			sandbox(ebi('epi'), sb_lg, sba_lg, '', lg1);
 
 		if (this.hpush && !this.back) {
 			var ofs = ebi('wrap').offsetTop;
@@ -9156,7 +9156,7 @@ function show_md(md, name, div, url, depth) {
 		if (!have_emp)
 			md_html = DOMPurify.sanitize(md_html);
 
-		if (sandbox(div, sb_md, 'mdo', md_html))
+		if (sandbox(div, sb_md, sba_md, 'mdo', md_html))
 			return;
 
 		ext = md_plug.post;
@@ -9207,7 +9207,7 @@ function show_readme(md, n) {
 	var tgt = ebi(n ? 'epi' : 'pro');
 
 	if (!treectl.ireadme)
-		return sandbox(tgt, '', '', 'a');
+		return sandbox(tgt, '', '', '', 'a');
 
 	show_md(md, n ? 'README.md' : 'PREADME.md', tgt);
 }
@@ -9216,7 +9216,7 @@ for (var a = 0; a < readmes.length; a++)
 		show_readme(readmes[a], a);
 
 
-function sandbox(tgt, rules, cls, html) {
+function sandbox(tgt, rules, allow, cls, html) {
 	if (!treectl.ireadme) {
 		tgt.innerHTML = html ? L.md_off : '';
 		return;
@@ -9272,6 +9272,7 @@ function sandbox(tgt, rules, cls, html) {
 	var fr = mknod('iframe');
 	fr.setAttribute('title', 'folder ' + tid + 'logue');
 	fr.setAttribute('sandbox', rules ? 'allow-' + rules.replace(/ /g, ' allow-') : '');
+	fr.setAttribute('allow', allow);
 	fr.setAttribute('srcdoc', html);
 	tgt.appendChild(fr);
 	treectl.sb_msg = true;
@@ -9321,8 +9322,8 @@ if (sb_lg && logues.length) {
 	if (logues[1] === Ls.eng.f_empty)
 		logues[1] = L.f_empty;
 
-	sandbox(ebi('pro'), sb_lg, '', logues[0]);
-	sandbox(ebi('epi'), sb_lg, '', logues[1]);
+	sandbox(ebi('pro'), sb_lg, sba_lg, '', logues[0]);
+	sandbox(ebi('epi'), sb_lg, sba_lg, '', logues[1]);
 }
 
 
