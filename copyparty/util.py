@@ -121,6 +121,13 @@ except:
     HAVE_SQLITE3 = False
 
 try:
+    import importlib.util
+
+    HAVE_ZMQ = bool(importlib.util.find_spec("zmq"))
+except:
+    HAVE_ZMQ = False
+
+try:
     if os.environ.get("PRTY_NO_PSUTIL"):
         raise Exception()
 
@@ -3437,15 +3444,118 @@ def runihook(
             retchk(rc, bcmd, err, log, 5)
             return False
 
-    wait -= time.time() - t0
-    if wait > 0:
-        time.sleep(wait)
+    if wait:
+        wait -= time.time() - t0
+        if wait > 0:
+            time.sleep(wait)
 
     return True
 
 
+ZMQ = {}
+ZMQ_DESC = {
+    "pub": "fire-and-forget to all/any connected SUB-clients",
+    "push": "fire-and-forget to one of the connected PULL-clients",
+    "req": "send messages to a REP-server and blocking-wait for ack",
+}
+
+
+def _zmq_hook(
+    log: Optional["NamedLogger"],
+    verbose: bool,
+    src: str,
+    cmd: str,
+    msg: str,
+    wait: float,
+    sp_ka: dict[str, Any],
+) -> str:
+    import zmq
+
+    try:
+        mtx = ZMQ["mtx"]
+    except:
+        ZMQ["mtx"] = threading.Lock()
+        time.sleep(0.1)
+        mtx = ZMQ["mtx"]
+
+    ret = ""
+    t0 = time.time()
+    if verbose and log:
+        log("hook(%s) %r entering zmq-main-lock" % (src, cmd), 6)
+
+    with mtx:
+        try:
+            mode, sck, mtx = ZMQ[cmd]
+        except:
+            mode, uri = cmd.split(":", 1)
+            try:
+                desc = ZMQ_DESC[mode]
+                if log:
+                    t = "libzmq(%s) pyzmq(%s) init(%s); %s"
+                    log(t % (zmq.zmq_version(), zmq.__version__, cmd, desc))
+            except:
+                raise Exception("the only supported ZMQ modes are REQ PUB PUSH")
+
+            try:
+                ctx = ZMQ["ctx"]
+            except:
+                ctx = ZMQ["ctx"] = zmq.Context()
+
+            timeout = sp_ka["timeout"]
+
+            if mode == "pub":
+                sck = ctx.socket(zmq.PUB)
+                sck.bind(uri)
+                time.sleep(1)  # give clients time to connect; avoids losing first msg
+            elif mode == "push":
+                sck = ctx.socket(zmq.PUSH)
+                sck.bind(uri)
+                if timeout:
+                    sck.SNDTIMEO = int(timeout * 1000)
+            elif mode == "req":
+                sck = ctx.socket(zmq.REQ)
+                sck.connect(uri)
+                if timeout:
+                    sck.RCVTIMEO = int(timeout * 1000)
+            else:
+                raise Exception()
+
+            mtx = threading.Lock()
+            ZMQ[cmd] = (mode, sck, mtx)
+
+    if verbose and log:
+        log("hook(%s) %r entering socket-lock" % (src, cmd), 6)
+
+    with mtx:
+        if verbose and log:
+            log("hook(%s) %r sending |%d|" % (src, cmd, len(msg)), 6)
+
+        sck.send_string(msg)  # PUSH can safely timeout here
+
+        if mode == "req":
+            if verbose and log:
+                log("hook(%s) %r awaiting ack from req" % (src, cmd), 6)
+            try:
+                ret = sck.recv().decode("utf-8", "replace")
+            except:
+                sck.close()
+                del ZMQ[cmd]  # bad state; must reset
+                raise Exception("ack timeout; zmq socket killed")
+
+    if ret and log:
+        log("hook(%s) %r ACK: %r" % (src, cmd, ret), 6)
+
+    if wait:
+        wait -= time.time() - t0
+        if wait > 0:
+            time.sleep(wait)
+
+    return ret
+
+
 def _runhook(
     log: Optional["NamedLogger"],
+    verbose: bool,
     src: str,
     cmd: str,
     ap: str,
@@ -3486,6 +3596,15 @@ def _runhook(
     else:
         arg = txt or ap
 
+    if acmd[0].startswith("zmq:"):
+        zs = "zmq-error"
+        try:
+            zs = _zmq_hook(log, verbose, src, acmd[0][4:].lower(), arg, wait, sp_ka)
+        except Exception as ex:
+            if log:
+                log("zeromq failed: %r" % (ex,))
+        return {"rc": 0, "stdout": zs}
+
     acmd += [arg]
     if acmd[0].endswith(".py"):
         acmd = [pybin] + acmd
@@ -3514,9 +3633,10 @@ def _runhook(
             except:
                 ret = {"rc": rc, "stdout": v}
 
-    wait -= time.time() - t0
-    if wait > 0:
-        time.sleep(wait)
+    if wait:
+        wait -= time.time() - t0
+        if wait > 0:
+            time.sleep(wait)
 
     return ret
 
@@ -3540,14 +3660,15 @@ def runhook(
 ) -> dict[str, Any]:
     assert broker or up2k  # !rm
     args = (broker or up2k).args
+    verbose = args.hook_v
     vp = vp.replace("\\", "/")
     ret = {"rc": 0}
     for cmd in cmds:
         try:
             hr = _runhook(
-                log, src, cmd, ap, vp, host, uname, perms, mt, sz, ip, at, txt
+                log, verbose, src, cmd, ap, vp, host, uname, perms, mt, sz, ip, at, txt
             )
-            if log and args.hook_v:
+            if verbose and log:
                 log("hook(%s) %r => \033[32m%s" % (src, cmd, hr), 6)
             if not hr:
                 return {}

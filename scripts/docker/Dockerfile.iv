@@ -9,7 +9,8 @@ ENV     XDG_CONFIG_HOME=/cfg
 
 RUN     apk add -U !pyc \
             tzdata wget \
-            py3-jinja2 py3-argon2-cffi py3-pillow py3-pip py3-cffi \
+            py3-jinja2 py3-argon2-cffi py3-pyzmq py3-pillow \
+            py3-pip py3-cffi \
             ffmpeg \
             vips-jxl vips-heif vips-poppler vips-magick \
         && apk add -t .bd \

@@ -342,6 +342,7 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install jinja2 strip_hints  # MANDATORY
 pip install argon2-cffi  # password hashing
+pip install pyzmq  # send 0mq from hooks
 pip install mutagen  # audio metadata
 pip install pyftpdlib  # ftp server
 pip install partftpy  # tftp server

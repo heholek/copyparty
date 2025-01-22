@@ -52,6 +52,7 @@ ftpd = ["pyftpdlib"]
 ftps = ["pyftpdlib", "pyopenssl"]
 tftpd = ["partftpy>=0.4.0"]
 pwhash = ["argon2-cffi"]
+zeromq = ["pyzmq"]
 
 [project.scripts]
 copyparty = "copyparty.__main__:main"

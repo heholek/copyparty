@@ -50,6 +50,7 @@ from .util import (
     FFMPEG_URL,
     HAVE_PSUTIL,
     HAVE_SQLITE3,
+    HAVE_ZMQ,
     URL_BUG,
     UTC,
     VERSIONS,
@@ -641,6 +642,7 @@ class SvcHub(object):
             (HAVE_FFPROBE, "ffprobe", t_ff + ", read audio/media tags"),
             (HAVE_MUTAGEN, "mutagen", "read audio tags (ffprobe is better but slower)"),
             (HAVE_ARGON2, "argon2", "secure password hashing (advanced users only)"),
+            (HAVE_ZMQ, "pyzmq", "send zeromq messages from event-hooks"),
             (HAVE_HEIF, "pillow-heif", "read .heif images with pillow (rarely useful)"),
             (HAVE_AVIF, "pillow-avif", "read .avif images with pillow (rarely useful)"),
         ]

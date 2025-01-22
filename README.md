@@ -80,6 +80,7 @@ turn almost any device into a file server with resumable uploads/downloads using
     * [metadata from audio files](#metadata-from-audio-files) - set `-e2t` to index tags on upload
     * [file parser plugins](#file-parser-plugins) - provide custom parsers to index additional tags
     * [event hooks](#event-hooks) - trigger a program on uploads, renames etc ([examples](./bin/hooks/))
+        * [zeromq](#zeromq) - event-hooks can send zeromq messages
         * [upload events](#upload-events) - the older, more powerful approach ([examples](./bin/mtag/))
     * [handlers](#handlers) - redefine behavior with plugins ([examples](./bin/handlers/))
     * [ip auth](#ip-auth) - autologin based on IP range (CIDR)
@@ -1458,6 +1459,23 @@ there's a bunch of flags and stuff, see `--help-hooks`
 if you want to write your own hooks, see [devnotes](./docs/devnotes.md#event-hooks)
 
 
+### zeromq
+
+event-hooks can send zeromq messages  instead of running programs
+
+to send a 0mq message every time a file is uploaded,
+
+* `--xau zmq:pub:tcp://*:5556` sends a PUB to any/all connected SUB clients
+* `--xau t3,zmq:push:tcp://*:5557` sends a PUSH to exactly one connected PULL client
+* `--xau t3,j,zmq:req:tcp://localhost:5555` sends a REQ to the connected REP client
+
+the PUSH and REQ examples have `t3` (timeout after 3 seconds) because they block if there's no clients to talk to
+
+* the REQ example does `t3,j` to send extended upload-info as json instead of just the filesystem-path
+
+see [zmq-recv.py](https://github.com/9001/copyparty/blob/hovudstraum/bin/zmq-recv.py) if you need something to receive the messages with
+
+
 ### upload events
 
 the older, more powerful approach ([examples](./bin/mtag/)):
@@ -2308,13 +2326,13 @@ mandatory deps:
 
 install these to enable bonus features
 
-enable hashed passwords in config: `argon2-cffi`
+enable [hashed passwords](#password-hashing) in config: `argon2-cffi`
 
-enable ftp-server:
+enable [ftp-server](#ftp-server):
 * for just plaintext FTP, `pyftpdlib` (is built into the SFX)
 * with TLS encryption, `pyftpdlib pyopenssl`
 
-enable music tags:
+enable [music tags](#metadata-from-audio-files):
 * either `mutagen` (fast, pure-python, skips a few tags, makes copyparty GPL? idk)
 * or `ffprobe` (20x slower, more accurate, possibly dangerous depending on your distro and users)
 
@@ -2325,8 +2343,9 @@ enable [thumbnails](#thumbnails) of...
 * **AVIF pictures:** `pyvips` or `ffmpeg` or `pillow-avif-plugin`
 * **JPEG XL pictures:** `pyvips` or `ffmpeg`
 
-enable [smb](#smb-server) support (**not** recommended):
-* `impacket==0.12.0`
+enable sending [zeromq messages](#zeromq) from event-hooks: `pyzmq`
+
+enable [smb](#smb-server) support (**not** recommended): `impacket==0.12.0`
 
 `pyvips` gives higher quality thumbnails than `Pillow` and is 320% faster, using 270% more ram: `sudo apt install libvips42 && python3 -m pip install --user -U pyvips`
 

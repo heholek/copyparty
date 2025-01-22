@@ -144,6 +144,7 @@ args = {
         "ftps": ["pyftpdlib", "pyopenssl"],
         "tftpd": ["partftpy>=0.4.0"],
         "pwhash": ["argon2-cffi"],
+        "zeromq": ["pyzmq"],
     },
     "entry_points": {"console_scripts": ["copyparty = copyparty.__main__:main"]},
     "scripts": ["bin/partyfuse.py", "bin/u2c.py"],

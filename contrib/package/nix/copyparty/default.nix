@@ -1,4 +1,4 @@
-{ lib, stdenv, makeWrapper, fetchurl, utillinux, python, jinja2, impacket, pyftpdlib, pyopenssl, argon2-cffi, pillow, pyvips, ffmpeg, mutagen,
+{ lib, stdenv, makeWrapper, fetchurl, utillinux, python, jinja2, impacket, pyftpdlib, pyopenssl, argon2-cffi, pillow, pyvips, pyzmq, ffmpeg, mutagen,
 
 # use argon2id-hashed passwords in config files (sha2 is always available)
 withHashedPasswords ? true,
@@ -20,6 +20,9 @@ withMediaProcessing ? true,
 
 # if MediaProcessing is not enabled, you probably want this instead (less accurate, but much safer and faster)
 withBasicAudioMetadata ? false,
+
+# send ZeroMQ messages from event-hooks
+withZeroMQ ? true,
 
 # enable FTPS support in the FTP server
 withFTPS ? false,
@@ -43,6 +46,7 @@ let
     ++ lib.optional withMediaProcessing ffmpeg
     ++ lib.optional withBasicAudioMetadata mutagen
     ++ lib.optional withHashedPasswords argon2-cffi
+    ++ lib.optional withZeroMQ pyzmq
     );
 in stdenv.mkDerivation {
   pname = "copyparty";
