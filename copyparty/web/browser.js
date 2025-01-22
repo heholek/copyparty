@@ -8635,8 +8635,8 @@ var arcfmt = (function () {
 			["pax", "tar=pax", L.fz_pax],
 			["tgz", "tar=gz", L.fz_targz],
 			["txz", "tar=xz", L.fz_tarxz],
-			["zip", "zip=utf8", L.fz_zip8],
-			["zip_dos", "zip", L.fz_zipd],
+			["zip", "zip", L.fz_zip8],
+			["zip_dos", "zip=dos", L.fz_zipd],
 			["zip_crc", "zip=crc", L.fz_zipc]
 		];
 

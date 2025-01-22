@@ -172,8 +172,8 @@ authenticate using header `Cookie: cppwd=foo` or url param `&pw=foo`
 | GET | `?tar=xz:9` | ...as an xz-level-9 gnu-tar file |
 | GET | `?tar=pax` | ...as a pax-tar file |
 | GET | `?tar=pax,xz` | ...as an xz-level-1 pax-tar file |
-| GET | `?zip=utf-8` | ...as a zip file |
-| GET | `?zip` | ...as a WinXP-compatible zip file |
+| GET | `?zip` | ...as a zip file |
+| GET | `?zip=dos` | ...as a WinXP-compatible zip file |
 | GET | `?zip=crc` | ...as an MSDOS-compatible zip file |
 | GET | `?tar&w` | pregenerate webp thumbnails |
 | GET | `?tar&j` | pregenerate jpg thumbnails |

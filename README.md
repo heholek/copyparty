@@ -616,8 +616,8 @@ select which type of archive you want in the `[⚙️] config` tab:
 | `pax` | `?tar=pax` | pax-format tar, futureproof, not as fast |
 | `tgz` | `?tar=gz` | gzip compressed gnu-tar (slow), for `curl \| tar -xvz` |
 | `txz` | `?tar=xz` | gnu-tar with xz / lzma compression (v.slow) |
-| `zip` | `?zip=utf8` | works everywhere, glitchy filenames on win7 and older |
-| `zip_dos` | `?zip` | traditional cp437 (no unicode) to fix glitchy filenames |
+| `zip` | `?zip` | works everywhere, glitchy filenames on win7 and older |
+| `zip_dos` | `?zip=dos` | traditional cp437 (no unicode) to fix glitchy filenames |
 | `zip_crc` | `?zip=crc` | cp437 with crc32 computed early for truly ancient software |
 
 * gzip default level is `3` (0=fast, 9=best), change with `?tar=gz:9`
@@ -625,7 +625,7 @@ select which type of archive you want in the `[⚙️] config` tab:
 * bz2 default level is `2` (1=fast, 9=best), change with `?tar=bz2:9`
 * hidden files ([dotfiles](#dotfiles)) are excluded unless account is allowed to list them
   * `up2k.db` and `dir.txt` is always excluded
-* bsdtar supports streaming unzipping: `curl foo?zip=utf8 | bsdtar -xv`
+* bsdtar supports streaming unzipping: `curl foo?zip | bsdtar -xv`
   * good, because copyparty's zip is faster than tar on small files
 * `zip_crc` will take longer to download since the server has to read each file twice
   * this is only to support MS-DOS PKZIP v2.04g (october 1993) and older

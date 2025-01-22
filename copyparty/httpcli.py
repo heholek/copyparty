@@ -4357,7 +4357,7 @@ class HttpCli(object):
             self.log,
             self.asrv,
             fgen,
-            utf8="utf" in uarg,
+            utf8="utf" in uarg or not uarg,
             pre_crc="crc" in uarg,
             cmp=uarg if cancmp or uarg == "pax" else "",
         )
