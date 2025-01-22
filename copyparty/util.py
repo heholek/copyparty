@@ -3406,6 +3406,7 @@ def _parsehook(
 
 def runihook(
     log: Optional["NamedLogger"],
+    verbose: bool,
     cmd: str,
     vol: "VFS",
     ups: list[tuple[str, int, int, str, str, str, int]],
@@ -3434,6 +3435,17 @@ def runihook(
         sp_ka["sin"] = json.dumps(ja).encode("utf-8", "replace")
     else:
         sp_ka["sin"] = b"\n".join(fsenc(x) for x in aps)
+
+    if acmd[0].startswith("zmq:"):
+        try:
+            msg = sp_ka["sin"].decode("utf-8", "replace")
+            _zmq_hook(log, verbose, "xiu", acmd[0][4:].lower(), msg, wait, sp_ka)
+            if verbose and log:
+                log("hook(xiu) %r OK" % (cmd,), 6)
+        except Exception as ex:
+            if log:
+                log("zeromq failed: %r" % (ex,))
+        return True
 
     t0 = time.time()
     if fork:

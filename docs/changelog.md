@@ -1,4 +1,43 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0111-1611  `v1.16.8`  android boost
+
+## 🧪 new features
+
+* 10x faster file hashing in android-chrome ec507889
+  * on a recent pixel, speed went from 13 to 139 MiB/s
+  * android's sandboxing makes small reads expensive, so do bigger reads instead
+    * so the browser-tab will use more RAM on android now, maybe around 200 MiB
+    * this only affects chrome-based browsers on android, not firefox
+* PUT/multipart uploads: request-header `Accept: json` makes it return json instead of html, just like `?j` ce0e5be4
+* add config examples for [ishare](https://isharemac.app/), a MacOS screenshot utility inspired by ShareX 0c0d6b2b
+  * also includes a bug-workaround for [ishare#107](https://github.com/castdrian/ishare/issues/107) - copyparty will now include a toplevel json property `fileurl` in the response if exactly one file was uploaded
+  * the [connect-page](https://a.ocv.me/?hc) generates an appropriate `copyparty.iscu` for ishare; [it looks like this](https://github.com/user-attachments/assets/820730ad-2319-4912-8eb2-733755a4cf54)
+
+## 🩹 bugfixes
+
+* fix a potential upload deadlock when...
+  * ...the database (`-e2d`) is **not** enabled for any volume, and...
+  * ...either the shares feature, or user-changeable passwords, is enabled 9e542cf8
+* when loading the partial-uploads registry on startup, a cosmetic desync could occur 467acb47
+
+## 🔧 other changes
+
+* remove some deprecated properties in partial-upload metadata aa2a8fa2
+  * v1.15.7 is now the oldest version which still has any chance of reading a modern up2k.snap
+* #129 added howto: [using webdav when copyparty is behind IdP](https://github.com/9001/copyparty/blob/hovudstraum/docs/idp.md#connecting-webdav-clients) -- thanks @wuast94 !
+* added howto: [install copyparty on a synology nas](https://github.com/9001/copyparty/blob/hovudstraum/docs/synology-dsm.md) 21f93042
+* more examples in the connect-page: 278258ee fb139697
+  * config-file for sharex on windows
+  * config-file for ishare on macos
+  * script for flameshot on linux
+* #75 add recommendation to use the [kamelåså project](https://github.com/steinuil/kameloso) instead of copyparty's [very-bad-idea.py](https://github.com/9001/copyparty/tree/hovudstraum/bin/mtag#dangerous-plugins) 9f84dc42
+* more reverse-proxy examples (haproxy, lighttpd, traefik, caddy) and improved nginx performance ac0a2da3
+  * readme has a [performance comparison](https://github.com/9001/copyparty?tab=readme-ov-file#reverse-proxy-performance) -- `haproxy > caddy > traefik > nginx > apache > lighttpd`
+* copyparty.exe: updated pillow 244e952f
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2024-1223-0005  `v1.16.7`  an idp fix for xmas
 
 # ☃️🎄 **there is still time** 🎅🎁

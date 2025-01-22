@@ -795,7 +795,7 @@ class Up2k(object):
                 continue
 
             self.log("xiu: %d# %r" % (len(wrfs), cmd))
-            runihook(self.log, cmd, vol, ups)
+            runihook(self.log, self.args.hook_v, cmd, vol, ups)
 
     def _vis_job_progress(self, job: dict[str, Any]) -> str:
         perc = 100 - (len(job["need"]) * 100.0 / (len(job["hash"]) or 1))

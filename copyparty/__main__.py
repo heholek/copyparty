@@ -740,6 +740,10 @@ def get_sects():
               the \033[33m,,\033[35m stops copyparty from reading the rest as flags and
               the \033[33m--\033[35m stops notify-send from reading the message as args
               and the alert will be "hey" followed by the messagetext
+
+             \033[36m--xau zmq:pub:tcp://*:5556\033[35m announces uploads on zeromq;
+             \033[36m--xau t3,zmq:push:tcp://*:5557\033[35m also works, and you can
+             \033[36m--xau t3,j,zmq:req:tcp://localhost:5555\033[35m too for example
             \033[0m
             each hook is executed once for each event, except for \033[36mxiu\033[0m
             which builds up a backlog of uploads, running the hook just once
