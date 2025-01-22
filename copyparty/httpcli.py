@@ -513,7 +513,7 @@ class HttpCli(object):
                 return False
 
             if "k" in uparam:
-                m = RE_K.search(uparam["k"])
+                m = re_k.search(uparam["k"])
                 if m:
                     zs = uparam["k"]
                     t = "malicious user; illegal filekey; req(%r) k(%r) => %r"

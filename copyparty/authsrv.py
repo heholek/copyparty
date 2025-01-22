@@ -1832,7 +1832,11 @@ class AuthSrv(object):
             if fka and not fk:
                 fk = fka
             if fk:
-                vol.flags["fk"] = int(fk) if fk is not True else 8
+                fk = 8 if fk is True else int(fk)
+                if fk > 72:
+                    t = "max filekey-length is 72; volume /%s specified %d (anything higher than 16 is pointless btw)"
+                    raise Exception(t % (vol.vpath, fk))
+                vol.flags["fk"] = fk
                 have_fk = True
 
             dk = vol.flags.get("dk")
