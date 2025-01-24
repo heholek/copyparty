@@ -2384,7 +2384,7 @@ var mpl = (function () {
 		if (!c)
 			return url;
 
-		return addq(url, 'th=' + (can_ogg ? 'opus' : (IPHONE || MACOS) ? 'caf' : 'mp3'));
+		return addq(url, 'th=' + (can_ogg ? 'opus' : can_caf ? 'caf' : 'mp3'));
 	};
 
 	r.pp = function () {
@@ -2493,7 +2493,8 @@ var mpl = (function () {
 })();
 
 
-var can_ogg = true;
+var can_ogg = true,
+	can_caf = (IPHONE || MACOS) && !/ OS ([1-9]|1[01])_/.test(UA);
 try {
 	can_ogg = new Audio().canPlayType('audio/ogg; codecs=opus') === 'probably';
 }
