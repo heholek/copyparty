@@ -450,7 +450,7 @@ function savechk_cb() {
 
 // firefox bug: initial selection offset isn't cleared properly through js
 var ff_clearsel = (function () {
-    if (navigator.userAgent.indexOf(') Gecko/') === -1)
+    if (UA.indexOf(') Gecko/') === -1)
         return function () { }
 
     return function () {

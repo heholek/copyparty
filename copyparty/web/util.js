@@ -31,12 +31,13 @@ var wah = '',
     MOBILE = TOUCH,
     CHROME = !!window.chrome,  // safari=false
     VCHROME = CHROME ? 1 : 0,
-    IE = /Trident\//.test(navigator.userAgent),
-    FIREFOX = ('netscape' in window) && / rv:/.test(navigator.userAgent),
-    IPHONE = TOUCH && /iPhone|iPad|iPod/i.test(navigator.userAgent),
-    LINUX = /Linux/.test(navigator.userAgent),
-    MACOS = /[^a-z]mac ?os/i.test(navigator.userAgent),
-    WINDOWS = /Windows/.test(navigator.userAgent);
+    UA = '' + navigator.userAgent,
+    IE = /Trident\//.test(UA),
+    FIREFOX = ('netscape' in window) && / rv:/.test(UA),
+    IPHONE = TOUCH && /iPhone|iPad|iPod/i.test(UA),
+    LINUX = /Linux/.test(UA),
+    MACOS = /[^a-z]mac ?os/i.test(UA),
+    WINDOWS = /Windows/.test(UA);
 
 if (!window.WebAssembly || !WebAssembly.Memory)
     window.WebAssembly = false;
@@ -196,7 +197,7 @@ function vis_exh(msg, url, lineNo, columnNo, error) {
         '<p style="font-size:1.3em;margin:0;line-height:2em">try to <a href="#" onclick="localStorage.clear();location.reload();">reset copyparty settings</a> if you are stuck here, or <a href="#" onclick="ignex();">ignore this</a> / <a href="#" onclick="ignex(true);">ignore all</a> / <a href="?b=u">basic</a></p>',
         '<p style="color:#fff">please send me a screenshot arigathanks gozaimuch: <a href="<ghi>" target="_blank">new github issue</a></p>',
         '<p class="b">' + esc(url + ' @' + lineNo + ':' + columnNo), '<br />' + esc(msg).replace(/\n/g, '<br />') + '</p>',
-        '<p><b>UA:</b> ' + esc(navigator.userAgent + '')
+        '<p><b>UA:</b> ' + esc(UA)
     ];
 
     try {

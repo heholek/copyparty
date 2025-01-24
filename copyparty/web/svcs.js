@@ -1,9 +1,9 @@
 function QSA(x) {
     return document.querySelectorAll(x);
 }
-var LINUX = /Linux/.test(navigator.userAgent),
-    MACOS = /[^a-z]mac ?os/i.test(navigator.userAgent),
-    WINDOWS = /Windows/.test(navigator.userAgent);
+var LINUX = /Linux/.test(UA),
+    MACOS = /[^a-z]mac ?os/i.test(UA),
+    WINDOWS = /Windows/.test(UA);
 
 
 var oa = QSA('pre');

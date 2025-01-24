@@ -969,7 +969,7 @@ function up2k_init(subtle) {
             ud = function () { ebi('dir' + fdom_ctr).click(); };
 
         // too buggy on chrome <= 72
-        var m = / Chrome\/([0-9]+)\./.exec(navigator.userAgent);
+        var m = / Chrome\/([0-9]+)\./.exec(UA);
         if (m && parseInt(m[1]) < 73)
             return uf();
 
