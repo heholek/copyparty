@@ -1,11 +1,3 @@
-function QSA(x) {
-    return document.querySelectorAll(x);
-}
-var LINUX = /Linux/.test(UA),
-    MACOS = /[^a-z]mac ?os/i.test(UA),
-    WINDOWS = /Windows/.test(UA);
-
-
 var oa = QSA('pre');
 for (var a = 0; a < oa.length; a++) {
     var html = oa[a].innerHTML,

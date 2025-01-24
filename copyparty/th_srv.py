@@ -46,6 +46,9 @@ HAVE_HEIF = False
 HAVE_AVIF = False
 HAVE_WEBP = False
 
+EXTS_TH = set(["jpg", "webp", "png"])
+EXTS_AC = set(["opus", "caf", "mp3"])
+
 try:
     if os.environ.get("PRTY_NO_PIL"):
         raise Exception()
@@ -139,7 +142,7 @@ def thumb_path(histpath: str, rem: str, mtime: float, fmt: str, ffa: set[str]) -
     h = hashlib.sha512(afsenc(fn)).digest()
     fn = ub64enc(h).decode("ascii")[:24]
 
-    if fmt in ("opus", "caf", "mp3"):
+    if fmt in EXTS_AC:
         cat = "ac"
     else:
         fc = fmt[:1]
@@ -334,9 +337,10 @@ class ThumbSrv(object):
                 ap_unpk = abspath
 
             if not bos.path.exists(tpath):
-                want_mp3 = tpath.endswith(".mp3")
-                want_opus = tpath.endswith(".opus") or tpath.endswith(".caf")
-                want_png = tpath.endswith(".png")
+                tex = tpath.rsplit(".", 1)[-1]
+                want_mp3 = tex == "mp3"
+                want_opus = tex in ("opus", "caf")
+                want_png = tex == "png"
                 want_au = want_mp3 or want_opus
                 for lib in self.args.th_dec:
                     can_au = lib == "ff" and (
@@ -891,7 +895,7 @@ class ThumbSrv(object):
 
     def _clean(self, cat: str, thumbpath: str) -> int:
         # self.log("cln {}".format(thumbpath))
-        exts = ["jpg", "webp", "png"] if cat == "th" else ["opus", "caf", "mp3"]
+        exts = EXTS_TH if cat == "th" else EXTS_AC
         maxage = getattr(self.args, cat + "_maxage")
         now = time.time()
         prev_b64 = None

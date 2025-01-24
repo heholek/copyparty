@@ -36,7 +36,7 @@ var wah = '',
     FIREFOX = ('netscape' in window) && / rv:/.test(UA),
     IPHONE = TOUCH && /iPhone|iPad|iPod/i.test(UA),
     LINUX = /Linux/.test(UA),
-    MACOS = /[^a-z]mac ?os/i.test(UA),
+    MACOS = /Macintosh/.test(UA),
     WINDOWS = /Windows/.test(UA);
 
 if (!window.WebAssembly || !WebAssembly.Memory)

@@ -6,7 +6,7 @@ import os
 from .__init__ import TYPE_CHECKING
 from .authsrv import VFS
 from .bos import bos
-from .th_srv import HAVE_WEBP, thumb_path
+from .th_srv import EXTS_AC, HAVE_WEBP, thumb_path
 from .util import Cooldown
 
 if True:  # pylint: disable=using-constant-test
@@ -57,13 +57,15 @@ class ThumbCli(object):
         if is_vid and "dvthumb" in dbv.flags:
             return None
 
-        want_opus = fmt in ("opus", "caf", "mp3")
+        want_opus = fmt in EXTS_AC
         is_au = ext in self.fmt_ffa
         is_vau = want_opus and ext in self.fmt_ffv
         if is_au or is_vau:
             if want_opus:
                 if self.args.no_acode:
                     return None
+                elif fmt == "caf" and self.args.no_caf:
+                    fmt = "mp3"
             else:
                 if "dathumb" in dbv.flags:
                     return None
