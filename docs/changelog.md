@@ -1,4 +1,29 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0122-2326  `v1.16.9`  ZeroMQ says hello
+
+## 🧪 new features
+
+* event-hooks can send zeromq / zmq / 0mq messages; see [readme](https://github.com/9001/copyparty#zeromq) or `--help-hooks` for examples d9db1534
+* new volflags to specify the [allow-tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy#iframes) of the markdown/logue sandbox, to allow fullscreen and such (see `--help-flags`) 6a0aaaf0
+* new volflag `nosparse` for possibly-better performance in very rare and specific scenarios 917380dd
+  * only enable this if you're uploading to s3 or something like that, and do plenty of benchmarking to make sure that it actually improved performance instead of making it worse
+
+## 🩹 bugfixes
+
+* restrict max-length of filekeys to 72 characters e0cac6fd
+* the hash-calculator mode of the commandline uploader produced incorrect whole-file hashes 4c04798a
+  * each chunk (`--chs`) was okay, but the final sum was not
+
+## 🔧 other changes
+
+* selftest the xml-parser on startup with malicious xml b2e8bf6e
+  * just in case a future python-version suddenly makes it unsafe somehow
+* disable some features if a dangerously misconfigured reverseproxy is detected 3f84b0a0
+* the download-as-zip feature now defaults to utf8 filenames 1231ce19
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0111-1611  `v1.16.8`  android boost
 
 ## 🧪 new features
