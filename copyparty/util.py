@@ -3519,18 +3519,21 @@ def _zmq_hook(
 
             if mode == "pub":
                 sck = ctx.socket(zmq.PUB)
+                sck.setsockopt(zmq.LINGER, 0)
                 sck.bind(uri)
                 time.sleep(1)  # give clients time to connect; avoids losing first msg
             elif mode == "push":
                 sck = ctx.socket(zmq.PUSH)
-                sck.bind(uri)
                 if timeout:
                     sck.SNDTIMEO = int(timeout * 1000)
+                sck.setsockopt(zmq.LINGER, 0)
+                sck.bind(uri)
             elif mode == "req":
                 sck = ctx.socket(zmq.REQ)
-                sck.connect(uri)
                 if timeout:
                     sck.RCVTIMEO = int(timeout * 1000)
+                sck.setsockopt(zmq.LINGER, 0)
+                sck.connect(uri)
             else:
                 raise Exception()
 
