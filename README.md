@@ -892,6 +892,8 @@ will show uploader IP and upload-time if the visitor has the admin permission
 
 * global-option `--ups-when` makes upload-time visible to all users, and not just admins
 
+* global-option `--ups-who` (volflag `ups_who`) specifies who gets access (0=nobody, 1=admins, 2=everyone), default=2
+
 note that the [🧯 unpost](#unpost) feature is better suited for viewing *your own* recent uploads, as it includes the option to undo/delete them
 
 

@@ -5152,6 +5152,12 @@ class HttpCli(object):
             adm = "*" in vol.axs.uadmin or self.uname in vol.axs.uadmin
             dots = "*" in vol.axs.udot or self.uname in vol.axs.udot
 
+            lvl = int(vol.flags["ups_who"])
+            if not lvl:
+                continue
+            elif lvl == 1 and not adm:
+                continue
+
             n = 1000
             q = "select sz, rd, fn, ip, at from up where at>0 order by at desc"
             for sz, rd, fn, ip, at in cur.execute(q):

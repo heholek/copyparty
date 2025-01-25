@@ -93,6 +93,7 @@ def vf_vmap() -> dict[str, str]:
         "unlist",
         "u2abort",
         "u2ts",
+        "ups_who",
     ):
         ret[k] = k
     return ret
