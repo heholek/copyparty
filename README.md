@@ -353,13 +353,18 @@ same order here too
 * iPhones: the volume control doesn't work because [apple doesn't want it to](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/Device-SpecificConsiderations/Device-SpecificConsiderations.html#//apple_ref/doc/uid/TP40009523-CH5-SW11)
   * `AudioContext` will probably never be a viable workaround as apple introduces new issues faster than they fix current ones
 
+* iPhones: music volume goes on a rollercoaster during song changes
+  * nothing I can do about it because `AudioContext` is still broken in safari
+
 * iPhones: the preload feature (in the media-player-options tab) can cause a tiny audio glitch 20sec before the end of each song, but disabling it may cause worse iOS bugs to appear instead
   * just a hunch, but disabling preloading may cause playback to stop entirely, or possibly mess with bluetooth speakers
   * tried to add a tooltip regarding this but looks like apple broke my tooltips
 
 * iPhones: preloaded awo files make safari log MEDIA_ERR_NETWORK errors as playback starts, but the song plays just fine so eh whatever
-
   * awo, opus-weba, is apple's new take on opus support, replacing opus-caf which was technically limited to cbr opus
+
+* iPhones: preloading another awo file may cause playback to stop
+  * can be somewhat mitigated with `mp.au.play()` in `mp.onpreload` but that can hit a race condition in safari that starts playing the same audio object twice in parallel...
 
 * Windows: folders cannot be accessed if the name ends with `.`
   * python or windows bug
