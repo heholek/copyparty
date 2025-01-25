@@ -330,6 +330,7 @@ DAV_ALLPROPS = set(DAV_ALLPROP_L)
 
 MIMES = {
     "opus": "audio/ogg; codecs=opus",
+    "owa": "audio/webm; codecs=opus",
 }
 
 

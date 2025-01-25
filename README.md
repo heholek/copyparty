@@ -357,6 +357,10 @@ same order here too
   * just a hunch, but disabling preloading may cause playback to stop entirely, or possibly mess with bluetooth speakers
   * tried to add a tooltip regarding this but looks like apple broke my tooltips
 
+* iPhones: preloaded awo files make safari log MEDIA_ERR_NETWORK errors as playback starts, but the song plays just fine so eh whatever
+
+  * awo, opus-weba, is apple's new take on opus support, replacing opus-caf which was technically limited to cbr opus
+
 * Windows: folders cannot be accessed if the name ends with `.`
   * python or windows bug
 
@@ -927,6 +931,11 @@ open the `[🎺]` media-player-settings tab to configure it,
   * `[aac]` converts `aac` and `m4a` files into opus (if supported by browser) or mp3
   * `[oth]` converts all other known formats into opus (if supported by browser) or mp3
     * `aac|ac3|aif|aiff|alac|alaw|amr|ape|au|dfpwm|dts|flac|gsm|it|m4a|mo3|mod|mp2|mp3|mpc|mptm|mt2|mulaw|ogg|okt|opus|ra|s3m|tak|tta|ulaw|wav|wma|wv|xm|xpk`
+* "transcode to":
+  * `[opus]` produces an `opus` whenever transcoding is necessary (the best choice on Android and PCs)
+  * `[awo]` is `opus` in a `weba` file, good for iPhones (iOS 17.5 and newer) but Apple is still fixing some state-confusion bugs as of iOS 18.2.1
+  * `[caf]` is `opus` in a `caf` file, good for iPhones (iOS 11 through 17), technically unsupported by Apple but works for the mos tpart
+  * `[mp3]` -- the myth, the legend, the undying master of mediocre sound quality that definitely works everywhere
 * "tint" reduces the contrast of the playback bar
 
 

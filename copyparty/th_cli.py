@@ -66,6 +66,8 @@ class ThumbCli(object):
                     return None
                 elif fmt == "caf" and self.args.no_caf:
                     fmt = "mp3"
+                elif fmt == "owa" and self.args.no_owa:
+                    fmt = "mp3"
             else:
                 if "dathumb" in dbv.flags:
                     return None

@@ -47,7 +47,7 @@ HAVE_AVIF = False
 HAVE_WEBP = False
 
 EXTS_TH = set(["jpg", "webp", "png"])
-EXTS_AC = set(["opus", "caf", "mp3"])
+EXTS_AC = set(["opus", "owa", "caf", "mp3"])
 
 try:
     if os.environ.get("PRTY_NO_PIL"):
@@ -339,7 +339,7 @@ class ThumbSrv(object):
             if not bos.path.exists(tpath):
                 tex = tpath.rsplit(".", 1)[-1]
                 want_mp3 = tex == "mp3"
-                want_opus = tex in ("opus", "caf")
+                want_opus = tex in ("opus", "owa", "caf")
                 want_png = tex == "png"
                 want_au = want_mp3 or want_opus
                 for lib in self.args.th_dec:
@@ -765,6 +765,8 @@ class ThumbSrv(object):
 
         src_opus = abspath.lower().endswith(".opus") or tags["ac"][1] == "opus"
         want_caf = tpath.endswith(".caf")
+        want_owa = tpath.endswith(".owa")
+
         tmp_opus = tpath
         if want_caf:
             tmp_opus = tpath + ".opus"
@@ -777,6 +779,13 @@ class ThumbSrv(object):
         bq = ("%dk" % (self.args.q_opus,)).encode("ascii")
 
         if not want_caf or not src_opus:
+            if want_owa:
+                container = b"webm"
+                tagset = [b"-map_metadata", b"-1"]
+            else:
+                container = b"opus"
+                tagset = self.big_tags(rawtags)
+
             # fmt: off
             cmd = [
                 b"ffmpeg",
@@ -784,10 +793,11 @@ class ThumbSrv(object):
                 b"-v", b"error",
                 b"-hide_banner",
                 b"-i", fsenc(abspath),
-            ] + self.big_tags(rawtags) + [
+            ] + tagset + [
                 b"-map", b"0:a:0",
                 b"-c:a", b"libopus",
                 b"-b:a", bq,
+                b"-f", container,
                 fsenc(tmp_opus)
             ]
             # fmt: on

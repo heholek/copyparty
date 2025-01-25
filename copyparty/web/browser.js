@@ -263,6 +263,7 @@ var Ls = {
 		"ml_pmode": "at end of folder...",
 		"ml_btns": "cmds",
 		"ml_tcode": "transcode",
+		"ml_tcode2": "transcode to",
 		"ml_tint": "tint",
 		"ml_eq": "audio equalizer",
 		"ml_drc": "dynamic range compressor",
@@ -286,6 +287,13 @@ var Ls = {
 		"mt_cflac": "convert flac / wav to opus\">flac",
 		"mt_caac": "convert aac / m4a to opus\">aac",
 		"mt_coth": "convert all others (not mp3) to opus\">oth",
+		"mt_c2opus": "best choice for desktops, laptops, android\">opus",
+		"mt_c2owa": "opus-weba, for iOS 17.5 and newer\">owa",
+		"mt_c2caf": "opus-caf, for iOS 11 through 17\">caf",
+		"mt_c2mp3": "use this on very old devices\">mp3",
+		"mt_c2ok": "nice, good choice",
+		"mt_c2nd": "that's not the recommended output format for your device, but that's fine",
+		"mt_c2ng": "your device does not seem to support this output format, but let's try anyways",
 		"mt_tint": "background level (0-100) on the seekbar$Nto make buffering less distracting",
 		"mt_eq": "enables the equalizer and gain control;$N$Nboost &lt;code&gt;0&lt;/code&gt; = standard 100% volume (unmodified)$N$Nwidth &lt;code&gt;1 &nbsp;&lt;/code&gt; = standard stereo (unmodified)$Nwidth &lt;code&gt;0.5&lt;/code&gt; = 50% left-right crossfeed$Nwidth &lt;code&gt;0 &nbsp;&lt;/code&gt; = mono$N$Nboost &lt;code&gt;-0.8&lt;/code&gt; &amp; width &lt;code&gt;10&lt;/code&gt; = vocal removal :^)$N$Nenabling the equalizer makes gapless albums fully gapless, so leave it on with all the values at zero (except width = 1) if you care about that",
 		"mt_drc": "enables the dynamic range compressor (volume flattener / brickwaller); will also enable EQ to balance the spaghetti, so set all EQ fields except for 'width' to 0 if you don't want it$N$Nlowers the volume of audio above THRESHOLD dB; for every RATIO dB past THRESHOLD there is 1 dB of output, so default values of tresh -24 and ratio 12 means it should never get louder than -22 dB and it is safe to increase the equalizer boost to 0.8, or even 1.8 with ATK 0 and a huge RLS like 90 (only works in firefox; RLS is max 1 in other browsers)$N$N(see wikipedia, they explain it much better)",
@@ -852,6 +860,7 @@ var Ls = {
 		"ml_pmode": "ved enden av mappen",
 		"ml_btns": "knapper",
 		"ml_tcode": "konvertering",
+		"ml_tcode2": "konverter til",
 		"ml_tint": "tint",
 		"ml_eq": "audio equalizer (tonejustering)",
 		"ml_drc": "compressor (volum-utjevning)",
@@ -875,6 +884,13 @@ var Ls = {
 		"mt_cflac": "konverter flac / wav-filer til opus\">flac",
 		"mt_caac": "konverter aac / m4a-filer til to opus\">aac",
 		"mt_coth": "konverter alt annet (men ikke mp3) til opus\">andre",
+		"mt_c2opus": "det beste valget for alle PCer og Android\">opus",
+		"mt_c2owa": "opus-weba, for iOS 17.5 og nyere\">owa",
+		"mt_c2caf": "opus-caf, for iOS 11 tilogmed 17\">caf",
+		"mt_c2mp3": "bra valg for steinalder-utstyr (slår aldri feil)\">mp3",
+		"mt_c2ok": "bra valg!",
+		"mt_c2nd": "ikke det foretrukne valget for din enhet, men funker sikkert greit",
+		"mt_c2ng": "ser virkelig ikke ut som enheten din takler dette formatet... men ok, vi prøver",
 		"mt_tint": "nivå av bakgrunnsfarge på søkestripa (0-100),$Ngjør oppdateringer mindre distraherende",
 		"mt_eq": "aktiver tonekontroll og forsterker;$N$Nboost &lt;code&gt;0&lt;/code&gt; = normal volumskala$N$Nwidth &lt;code&gt;1 &nbsp;&lt;/code&gt; = normal stereo$Nwidth &lt;code&gt;0.5&lt;/code&gt; = 50% blanding venstre-høyre$Nwidth &lt;code&gt;0 &nbsp;&lt;/code&gt; = mono$N$Nboost &lt;code&gt;-0.8&lt;/code&gt; &amp; width &lt;code&gt;10&lt;/code&gt; = instrumental :^)$N$Nreduserer også dødtid imellom sangfiler",
 		"mt_drc": "aktiver volum-utjevning (dynamic range compressor); vil også aktivere tonejustering, så sett alle EQ-feltene bortsett fra 'width' til 0 hvis du ikke vil ha noe EQ$N$Nfilteret vil dempe volumet på alt som er høyere enn TRESH dB; for hver RATIO dB over grensen er det 1dB som treffer høyttalerne, så standardverdiene tresh -24 og ratio 12 skal bety at volumet ikke går høyere enn -22 dB, slik at man trygt kan øke boost-verdien i equalizer'n til rundt 0.8, eller 1.8 kombinert med ATK 0 og RLS 90 (bare mulig i firefox; andre nettlesere tar ikke høyere RLS enn 1)$N$Nwikipedia forklarer dette mye bedre forresten",
@@ -1441,6 +1457,7 @@ var Ls = {
 		"ml_pmode": "在文件夹末尾时...",
 		"ml_btns": "命令",
 		"ml_tcode": "转码",
+		"ml_tcode2": "转换为", //m
 		"ml_tint": "透明度",
 		"ml_eq": "音频均衡器",
 		"ml_drc": "动态范围压缩器",
@@ -1464,6 +1481,13 @@ var Ls = {
 		"mt_cflac": "将 flac / wav 转换为 opus\">flac",
 		"mt_caac": "将 aac / m4a 转换为 opus\">aac",
 		"mt_coth": "将所有其他（不是 mp3）转换为 opus\">oth",
+		"mt_c2opus": "适合桌面电脑、笔记本电脑和安卓设备的最佳选择\">opus", //m
+		"mt_c2owa": "opus-weba（适用于 iOS 17.5 及更新版本）\">owa", //m
+		"mt_c2caf": "opus-caf（适用于 iOS 11 到 iOS 17）\">caf", //m
+		"mt_c2mp3": "适用于非常旧的设备\">mp3", //m
+		"mt_c2ok": "不错的选择！", //m
+		"mt_c2nd": "这不是您的设备推荐的输出格式，但应该没问题。", //m
+		"mt_c2ng": "您的设备似乎不支持此输出格式，不过我们还是试试看吧。", //m
 		"mt_tint": "在进度条上设置背景级别（0-100）",
 		"mt_eq": "启用均衡器和增益控制；$N$Nboost &lt;code&gt;0&lt;/code&gt; = 标准 100% 音量（默认）$N$Nwidth &lt;code&gt;1 &nbsp;&lt;/code&gt; = 标准立体声（默认）$Nwidth &lt;code&gt;0.5&lt;/code&gt; = 50% 左右交叉反馈$Nwidth &lt;code&gt;0 &nbsp;&lt;/code&gt; = 单声道$N$Nboost &lt;code&gt;-0.8&lt;/code&gt; &amp; width &lt;code&gt;10&lt;/code&gt; = 人声移除 )$N$N启用均衡器使无缝专辑完全无缝，所以如果你在乎这一点，请保持启用，所有值设为零（除了宽度 = 1）",
 		"mt_drc": "启用动态范围压缩器（音量平滑器 / 限幅器）；还会启用均衡器以平衡音频，因此如果你不想要它，请将均衡器字段除了 '宽度' 外的所有字段设置为 0$N$N降低 THRESHOLD dB 以上的音频的音量；每超过 THRESHOLD dB 的 RATIO 会有 1 dB 输出，所以默认值 tresh -24 和 ratio 12 意味着它的音量不应超过 -22 dB，可以安全地将均衡器增益提高到 0.8，甚至在 ATK 0 和 RLS 如 90 的情况下提高到 1.8（仅在 Firefox 中有效；其他浏览器中 RLS 最大为 1）$N$N（见维基百科，他们解释得更好）",
@@ -2269,6 +2293,12 @@ var mpl = (function () {
 			'<a href="#" id="ac_flac" class="tgl btn" tt="' + L.mt_cflac + '</a>' +
 			'<a href="#" id="ac_aac" class="tgl btn" tt="' + L.mt_caac + '</a>' +
 			'<a href="#" id="ac_oth" class="tgl btn" tt="' + L.mt_coth + '</a>' +
+			'</div></div>' +
+			'<div><h3>' + L.ml_tcode2 + '</h3><div>' +
+			'<a href="#" id="ac2opus" class="tgl btn" tt="' + L.mt_c2opus + '</a>' +
+			'<a href="#" id="ac2owa" class="tgl btn" tt="' + L.mt_c2owa + '</a>' +
+			'<a href="#" id="ac2caf" class="tgl btn" tt="' + L.mt_c2caf + '</a>' +
+			'<a href="#" id="ac2mp3" class="tgl btn" tt="' + L.mt_c2mp3 + '</a>' +
 			'</div></div>'
 		) : '') +
 
@@ -2384,7 +2414,46 @@ var mpl = (function () {
 		if (!c)
 			return url;
 
-		return addq(url, 'th=' + (can_ogg ? 'opus' : can_caf ? 'caf' : 'mp3'));
+		return addq(url, 'th=' + r.ac2);
+	};
+
+	r.set_ac2 = function () {
+		r.init_ac2(this.getAttribute('id').split('ac2')[1]);
+	};
+
+	r.init_ac2 = function (v) {
+		var dv = can_ogg ? 'opus' : can_owa ? 'owa' : can_caf ? 'caf' : 'mp3',
+			fmts = ['opus', 'owa', 'caf', 'mp3'],
+			btns = [];
+
+		if (v === dv)
+			toast.ok(5, L.mt_c2ok);
+		else if (v)
+			toast.inf(10, L.mt_c2nd);
+
+		if ((v == 'opus' && !can_ogg) ||
+			(v == 'caf' && !can_caf) ||
+			(v == 'owa' && !can_owa))
+			toast.warn(15, L.mt_c2ng);
+
+		for (var a = 0; a < fmts.length; a++) {
+			var btn = ebi('ac2' + fmts[a]);
+			btn.onclick = r.set_ac2;
+			btns.push(btn);
+		}
+		if (!IPHONE)
+			btns[1].style.display = btns[2].style.display = 'none';
+
+		if (v)
+			swrite('acode2', v);
+		else
+			v = dv;
+
+		v = sread('acode2', fmts) || v;
+		for (var a = 0; a < fmts.length; a++)
+			clmod(btns[a], 'on', fmts[a] == v)
+
+		r.ac2 = v;
 	};
 
 	r.pp = function () {
@@ -2483,6 +2552,7 @@ var mpl = (function () {
 	r.unbuffer = function (url) {
 		if (mp.au2 && (!url || mp.au2.rsrc == url)) {
 			mp.au2.src = mp.au2.rsrc = '';
+			mp.au2.ld = 0; //owa
 			mp.au2.load();
 		}
 		if (!url)
@@ -2493,12 +2563,22 @@ var mpl = (function () {
 })();
 
 
-var can_ogg = true,
-	can_caf = (IPHONE || MACOS) && !/ OS ([1-9]|1[01])_/.test(UA);
+var za,
+	can_ogg = true,
+	can_owa = false,
+	can_caf = IPHONE && !/ OS ([1-9]|1[01])_/.test(UA);
 try {
-	can_ogg = new Audio().canPlayType('audio/ogg; codecs=opus') === 'probably';
+	za = new Audio();
+	can_ogg = za.canPlayType('audio/ogg; codecs=opus') === 'probably';
+	can_owa = za.canPlayType('audio/webm; codecs=opus') === 'probably';
 }
 catch (ex) { }
+za = null;
+
+if (can_owa && IPHONE && / OS ([1-9]|1[0-7])_/.test(UA))
+	can_owa = false;
+
+mpl.init_ac2();
 
 
 var re_au_native = (can_ogg || have_acode) ? /\.(aac|flac|m4a|mp3|ogg|opus|wav)$/i : /\.(aac|flac|m4a|mp3|wav)$/i,
@@ -2671,7 +2751,8 @@ function MPlayer() {
 			});
 
 		r.nopause();
-		r.au2.onloadeddata = r.au2.onloadedmetadata = r.nopause;
+		r.au2.ld = 0; //owa
+		r.au2.onloadeddata = r.au2.onloadedmetadata = r.onpreload;
 		r.au2.preload = "auto";
 		r.au2.src = r.au2.rsrc = url;
 
@@ -2684,6 +2765,11 @@ function MPlayer() {
 
 	r.nopause = function () {
 		r.cd_pause = Date.now();
+	};
+
+	r.onpreload = function () {
+		r.nopause();
+		this.ld++;
 	};
 
 	r.init_fau = function () {
@@ -2986,7 +3072,7 @@ var pbar = (function () {
 				return;
 
 			pctx.fillStyle = light ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
-			var m = /[?&]th=(opus|caf|mp3)/.exec('' + mp.au.rsrc),
+			var m = /[?&]th=(opus|owa|caf|mp3)/.exec('' + mp.au.rsrc),
 				txt = mp.au.ded ? L.mm_playerr.replace(':', ' ;_;') :
 					m ? L.mm_bconv.format(m[1]) : L.mm_bload;
 
@@ -3942,16 +4028,20 @@ function play(tid, is_ev, seek) {
 		mp.au = mp.au2;
 		mp.au2 = t;
 		t.onerror = t.onprogress = t.onended = null;
+		t.ld = 0; //owa
 		mp.au.onerror = evau_error;
 		mp.au.onprogress = pbar.drawpos;
 		mp.au.onplaying = mpui.progress_updater;
+		mp.au.onloadeddata = mp.au.onloadedmetadata = mp.nopause;
 		mp.au.onended = next_song;
 		t = mp.au.currentTime;
 		if (isNum(t) && t > 0.1)
 			mp.au.currentTime = 0;
 	}
-	else
+	else {
+		console.log('get ' + url.split('/').pop());
 		mp.au.src = mp.au.rsrc = url;
+	}
 
 	mp.au.osrc = mp.tracks[tid];
 	afilt.apply();
@@ -4037,6 +4127,14 @@ function evau_error(e) {
 			err = L.mm_eabrt;
 			break;
 		case eplaya.error.MEDIA_ERR_NETWORK:
+			if (IPHONE && eplaya.ld === 1 && mpl.ac2 == 'owa' && !eplaya.paused && !eplaya.currentTime) {
+				eplaya.ded = 0;
+				if (!mpl.owaw) {
+					mpl.owaw = 1;
+					console.log('ignored iOS bug; spurious error sent in parallel with preloaded songs starting to play just fine');
+				}
+				return;
+			}
 			err = L.mm_enet;
 			break;
 		case eplaya.error.MEDIA_ERR_DECODE:
