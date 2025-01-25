@@ -1899,6 +1899,9 @@ class HttpCli(object):
             if "stash" in opt:
                 return self.handle_stash(False)
 
+            xm = []
+            xm_rsp = {}
+
             if "save" in opt:
                 post_sz, _, _, _, _, path, _ = self.dump_to_file(False)
                 self.log("urlform: %d bytes, %r" % (post_sz, path))
@@ -1921,7 +1924,7 @@ class HttpCli(object):
                             plain = plain[4:]
                             xm = self.vn.flags.get("xm")
                             if xm:
-                                runhook(
+                                xm_rsp = runhook(
                                     self.log,
                                     self.conn.hsrv.broker,
                                     None,
@@ -1944,6 +1947,13 @@ class HttpCli(object):
 
                     except Exception as ex:
                         self.log(repr(ex))
+
+            if "xm" in opt:
+                if xm:
+                    self.loud_reply(xm_rsp.get("stdout") or "", status=202)
+                    return True
+                else:
+                    return self.handle_get()
 
             if "get" in opt:
                 return self.handle_get()

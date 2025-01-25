@@ -9127,14 +9127,18 @@ var msel = (function () {
 	function cb() {
 		xhrchk(this, L.fsm_xe1, L.fsm_xe2);
 
-		if (this.status < 200 || this.status > 201) {
+		if (this.status < 200 || this.status > 202) {
 			sf.textContent = 'error: ' + hunpre(this.responseText);
 			return;
 		}
 
 		tb.value = '';
 		clmod(sf, 'vis');
-		sf.textContent = 'sent: "' + this.msg + '"';
+		var txt = 'sent: <code>' + esc(this.msg) + '</code>';
+		if (this.status == 202)
+			txt += '<br />&nbsp; got: <code>' + esc(this.responseText) + '</code>';
+
+		sf.innerHTML = txt;
 		setTimeout(function () {
 			treectl.goto();
 		}, 100);

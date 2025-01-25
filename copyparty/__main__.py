@@ -775,11 +775,22 @@ def get_sects():
             values for --urlform:
               \033[36mstash\033[35m dumps the data to file and returns length + checksum
               \033[36msave,get\033[35m dumps to file and returns the page like a GET
-              \033[36mprint,get\033[35m prints the data in the log and returns GET
-              (leave out the ",get" to return an error instead)\033[0m
+              \033[36mprint    \033[35m prints the data to log and returns an error
+              \033[36mprint,xm \033[35m prints the data to log and returns --xm output
+              \033[36mprint,get\033[35m prints the data to log and returns GET\033[0m
 
-            note that the \033[35m--xm\033[0m hook will only run if \033[35m--urlform\033[0m
-              is either \033[36mprint\033[0m or the default \033[36mprint,get\033[0m
+            note that the \033[35m--xm\033[0m hook will only run if \033[35m--urlform\033[0m is
+              either \033[36mprint\033[0m or \033[36mprint,get\033[0m or the default \033[36mprint,xm\033[0m
+
+            if an \033[35m--xm\033[0m hook returns text, then
+              the response code will be HTTP 202;
+              http/get responses will be HTTP 200
+
+            if there are multiple \033[35m--xm\033[0m hooks defined, then
+              the first hook that produced output is returned
+
+            if there are no \033[35m--xm\033[0m hooks defined, then the default
+              \033[36mprint,xm\033[0m behaves like \033[36mprint,get\033[0m (returning html)
             """
             ),
         ],
@@ -960,7 +971,7 @@ def add_general(ap, nc, srvname):
     ap2.add_argument("-v", metavar="VOL", type=u, action="append", help="add volume, \033[33mSRC\033[0m:\033[33mDST\033[0m:\033[33mFLAG\033[0m; examples [\033[32m.::r\033[0m], [\033[32m/mnt/nas/music:/music:r:aed\033[0m], see --help-accounts")
     ap2.add_argument("--grp", metavar="G:N,N", type=u, action="append", help="add group, \033[33mNAME\033[0m:\033[33mUSER1\033[0m,\033[33mUSER2\033[0m,\033[33m...\033[0m; example [\033[32madmins:ed,foo,bar\033[0m]")
     ap2.add_argument("-ed", action="store_true", help="enable the ?dots url parameter / client option which allows clients to see dotfiles / hidden files (volflag=dots)")
-    ap2.add_argument("--urlform", metavar="MODE", type=u, default="print,get", help="how to handle url-form POSTs; see \033[33m--help-urlform\033[0m")
+    ap2.add_argument("--urlform", metavar="MODE", type=u, default="print,xm", help="how to handle url-form POSTs; see \033[33m--help-urlform\033[0m")
     ap2.add_argument("--wintitle", metavar="TXT", type=u, default="cpp @ $pub", help="server terminal title, for example [\033[32m$ip-10.1.2.\033[0m] or [\033[32m$ip-]")
     ap2.add_argument("--name", metavar="TXT", type=u, default=srvname, help="server name (displayed topleft in browser and in mDNS)")
     ap2.add_argument("--mime", metavar="EXT=MIME", type=u, action="append", help="map file \033[33mEXT\033[0mension to \033[33mMIME\033[0mtype, for example [\033[32mjpg=image/jpeg\033[0m]")

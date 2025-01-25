@@ -243,6 +243,7 @@ URL_BUG = URL_PRJ + "/issues/new?labels=bug&template=bug_report.md"
 HTTPCODE = {
     200: "OK",
     201: "Created",
+    202: "Accepted",
     204: "No Content",
     206: "Partial Content",
     207: "Multi-Status",
@@ -3696,6 +3697,8 @@ def runhook(
                     ret["reloc"] = v
                 elif k in ret:
                     if k == "rc" and v:
+                        ret[k] = v
+                    elif k == "stdout" and v and not ret[k]:
                         ret[k] = v
                 else:
                     ret[k] = v
