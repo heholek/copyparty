@@ -32,7 +32,7 @@ from .util import (
 )
 
 if True:  # pylint: disable=using-constant-test
-    from typing import Optional, Union
+    from typing import Any, Optional, Union
 
 if TYPE_CHECKING:
     from .svchub import SvcHub
@@ -758,57 +758,102 @@ class ThumbSrv(object):
         if "ac" not in tags:
             raise Exception("not audio")
 
+        sq = "%dk" % (self.args.q_opus,)
+        bq = sq.encode("ascii")
+        if tags["ac"][1] == "opus":
+            enc = "-c:a copy"
+        else:
+            enc = "-c:a libopus -b:a " + sq
+
+        fun = self._conv_caf if fmt == "caf" else self._conv_owa
+
+        fun(abspath, tpath, tags, rawtags, enc, bq, vn)
+
+    def _conv_owa(
+        self,
+        abspath: str,
+        tpath: str,
+        tags: dict[str, tuple[int, Any]],
+        rawtags: dict[str, list[Any]],
+        enc: str,
+        bq: bytes,
+        vn: VFS,
+    ) -> None:
+        if tpath.endswith(".owa"):
+            container = b"webm"
+            tagset = [b"-map_metadata", b"-1"]
+        else:
+            container = b"opus"
+            tagset = self.big_tags(rawtags)
+
+        self.log("conv2 %s [%s]" % (container, enc), 6)
+        benc = enc.encode("ascii").split(b" ")
+
+        # fmt: off
+        cmd = [
+            b"ffmpeg",
+            b"-nostdin",
+            b"-v", b"error",
+            b"-hide_banner",
+            b"-i", fsenc(abspath),
+        ] + tagset + [
+            b"-map", b"0:a:0",
+        ] + benc + [
+            b"-f", container,
+            fsenc(tpath)
+        ]
+        # fmt: on
+        self._run_ff(cmd, vn, oom=300)
+
+    def _conv_caf(
+        self,
+        abspath: str,
+        tpath: str,
+        tags: dict[str, tuple[int, Any]],
+        rawtags: dict[str, list[Any]],
+        enc: str,
+        bq: bytes,
+        vn: VFS,
+    ) -> None:
+        tmp_opus = tpath + ".opus"
+        try:
+            wunlink(self.log, tmp_opus, vn.flags)
+        except:
+            pass
+
         try:
             dur = tags[".dur"][1]
         except:
             dur = 0
 
-        src_opus = abspath.lower().endswith(".opus") or tags["ac"][1] == "opus"
-        want_caf = tpath.endswith(".caf")
-        want_owa = tpath.endswith(".owa")
+        self.log("conv2 caf-tmp [%s]" % (enc,), 6)
+        benc = enc.encode("ascii").split(b" ")
 
-        tmp_opus = tpath
-        if want_caf:
-            tmp_opus = tpath + ".opus"
-            try:
-                wunlink(self.log, tmp_opus, vn.flags)
-            except:
-                pass
-
-        caf_src = abspath if src_opus else tmp_opus
-        bq = ("%dk" % (self.args.q_opus,)).encode("ascii")
-
-        if not want_caf or not src_opus:
-            if want_owa:
-                container = b"webm"
-                tagset = [b"-map_metadata", b"-1"]
-            else:
-                container = b"opus"
-                tagset = self.big_tags(rawtags)
-
-            # fmt: off
-            cmd = [
-                b"ffmpeg",
-                b"-nostdin",
-                b"-v", b"error",
-                b"-hide_banner",
-                b"-i", fsenc(abspath),
-            ] + tagset + [
-                b"-map", b"0:a:0",
-                b"-c:a", b"libopus",
-                b"-b:a", bq,
-                b"-f", container,
-                fsenc(tmp_opus)
-            ]
-            # fmt: on
-            self._run_ff(cmd, vn, oom=300)
+        # fmt: off
+        cmd = [
+            b"ffmpeg",
+            b"-nostdin",
+            b"-v", b"error",
+            b"-hide_banner",
+            b"-i", fsenc(abspath),
+            b"-map_metadata", b"-1",
+            b"-map", b"0:a:0",
+        ] + benc + [
+            b"-f", b"opus",
+            fsenc(tmp_opus)
+        ]
+        # fmt: on
+        self._run_ff(cmd, vn, oom=300)
 
         # iOS fails to play some "insufficiently complex" files
         # (average file shorter than 8 seconds), so of course we
         # fix that by mixing in some inaudible pink noise :^)
         # 6.3 sec seems like the cutoff so lets do 7, and
         # 7 sec of psyqui-musou.opus @ 3:50 is 174 KiB
-        if want_caf and (dur < 20 or bos.path.getsize(caf_src) < 256 * 1024):
+        sz = bos.path.getsize(tmp_opus)
+        if dur < 20 or sz < 256 * 1024:
+            zs = bq.decode("ascii")
+            self.log("conv2 caf-transcode; dur=%d sz=%d q=%s" % (dur, sz, zs), 6)
             # fmt: off
             cmd = [
                 b"ffmpeg",
@@ -827,15 +872,16 @@ class ThumbSrv(object):
             # fmt: on
             self._run_ff(cmd, vn, oom=300)
 
-        elif want_caf:
+        else:
             # simple remux should be safe
+            self.log("conv2 caf-remux; dur=%d sz=%d" % (dur, sz), 6)
             # fmt: off
             cmd = [
                 b"ffmpeg",
                 b"-nostdin",
                 b"-v", b"error",
                 b"-hide_banner",
-                b"-i", fsenc(abspath if src_opus else tmp_opus),
+                b"-i", fsenc(tmp_opus),
                 b"-map_metadata", b"-1",
                 b"-map", b"0:a:0",
                 b"-c:a", b"copy",
@@ -845,11 +891,10 @@ class ThumbSrv(object):
             # fmt: on
             self._run_ff(cmd, vn, oom=300)
 
-        if tmp_opus != tpath:
-            try:
-                wunlink(self.log, tmp_opus, vn.flags)
-            except:
-                pass
+        try:
+            wunlink(self.log, tmp_opus, vn.flags)
+        except:
+            pass
 
     def big_tags(self, raw_tags: dict[str, list[str]]) -> list[bytes]:
         ret = []

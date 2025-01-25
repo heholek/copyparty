@@ -2406,7 +2406,7 @@ var mpl = (function () {
 			c = r.ac_flac;
 		else if (/\.(aac|m4a)$/i.exec(cs))
 			c = r.ac_aac;
-		else if (/\.(ogg|opus)$/i.exec(cs) && !can_ogg)
+		else if (/\.(ogg|opus)$/i.exec(cs) && (!can_ogg || mpl.ac2 == 'mp3'))
 			c = true;
 		else if (re_au_native.exec(cs))
 			c = false;
