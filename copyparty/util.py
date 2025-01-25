@@ -3482,7 +3482,7 @@ def _zmq_hook(
     msg: str,
     wait: float,
     sp_ka: dict[str, Any],
-) -> str:
+) -> tuple[int, str]:
     import zmq
 
     try:
@@ -3493,6 +3493,7 @@ def _zmq_hook(
         mtx = ZMQ["mtx"]
 
     ret = ""
+    nret = 0
     t0 = time.time()
     if verbose and log:
         log("hook(%s) %r entering zmq-main-lock" % (src, cmd), 6)
@@ -3554,6 +3555,10 @@ def _zmq_hook(
                 log("hook(%s) %r awaiting ack from req" % (src, cmd), 6)
             try:
                 ret = sck.recv().decode("utf-8", "replace")
+                if ret.startswith("return "):
+                    m = re.search("^return ([0-9]+)", ret[:12])
+                    if m:
+                        nret = int(m.group(1))
             except:
                 sck.close()
                 del ZMQ[cmd]  # bad state; must reset
@@ -3567,7 +3572,7 @@ def _zmq_hook(
         if wait > 0:
             time.sleep(wait)
 
-    return ret
+    return nret, ret
 
 
 def _runhook(
@@ -3614,12 +3619,9 @@ def _runhook(
         arg = txt or ap
 
     if acmd[0].startswith("zmq:"):
-        zs = "zmq-error"
-        try:
-            zs = _zmq_hook(log, verbose, src, acmd[0][4:].lower(), arg, wait, sp_ka)
-        except Exception as ex:
-            if log:
-                log("zeromq failed: %r" % (ex,))
+        zi, zs = _zmq_hook(log, verbose, src, acmd[0][4:].lower(), arg, wait, sp_ka)
+        if zi:
+            raise Exception("zmq says %d" % (zi,))
         return {"rc": 0, "stdout": zs}
 
     acmd += [arg]

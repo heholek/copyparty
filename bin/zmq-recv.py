@@ -23,6 +23,9 @@ run this script with "pull" and run copyparty with this:
 run this script with "rep" and run copyparty with this:
   --xm t3,zmq:req:tcp://localhost:5555
 
+note: to conditionally block uploads based on message contents,
+use rep_server to answer with "return 1" and run copyparty with
+  --xau t3,c,zmq:req:tcp://localhost:5555
 """
 
 
@@ -56,7 +59,9 @@ def rep_server():
     sck.bind("tcp://*:5555")
     while True:
         print("copyparty says %r" % (sck.recv_string(),))
-        sck.send(b"thx")
+        reply = b"thx"
+        # reply = b"return 1"  # non-zero to block an upload
+        sck.send(reply)
 
 
 mode = sys.argv[1].lower() if len(sys.argv) > 1 else ""
