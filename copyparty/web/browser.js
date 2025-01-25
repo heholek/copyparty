@@ -7460,12 +7460,12 @@ var treectl = (function () {
 		xhr.rst = rst;
 		xhr.ts = Date.now();
 		xhr.open('GET', addq(dst, 'tree=' + top + (r.dots ? '&dots' : '') + k), true);
-		xhr.onload = xhr.onerror = recvtree;
+		xhr.onload = xhr.onerror = r.recvtree;
 		xhr.send();
 		enspin('#tree');
 	}
 
-	function recvtree() {
+	r.recvtree = function () {
 		if (!xhrchk(this, L.tl_xe1, L.tl_xe2))
 			return;
 
@@ -7475,10 +7475,10 @@ var treectl = (function () {
 		catch (ex) {
 			return toast.err(30, "bad <code>?tree</code> reply;\nexpected json, got this:\n\n" + esc(this.responseText + ''));
 		}
-		rendertree(res, this.ts, this.top, this.dst, this.rst);
-	}
+		r.rendertree(res, this.ts, this.top, this.dst, this.rst);
+	};
 
-	function rendertree(res, ts, top0, dst, rst) {
+	r.rendertree = function (res, ts, top0, dst, rst) {
 		var cur = ebi('treeul').getAttribute('ts');
 		if (cur && parseInt(cur) > ts + 20 && QS('#treeul>li>a+a')) {
 			console.log("reject tree; " + cur + " / " + (ts - cur));
@@ -7532,7 +7532,7 @@ var treectl = (function () {
 				console.log("dir_cb failed", ex);
 			}
 		}
-	}
+	};
 
 	function reload_tree() {
 		var cdir = r.nextdir || get_vpath(),
@@ -7754,7 +7754,7 @@ var treectl = (function () {
 				dirs.push(dn);
 			}
 
-			rendertree({ "a": dirs }, this.ts, ".", get_evpath() + (dk ? '?k=' + dk : ''));
+			r.rendertree({ "a": dirs }, this.ts, ".", get_evpath() + (dk ? '?k=' + dk : ''));
 		}
 
 		r.gentab(this.top, res);
