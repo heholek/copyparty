@@ -2425,6 +2425,11 @@ var mpl = (function () {
 	};
 
 	r.init_ac2 = function (v) {
+		if (!window.have_acode) {
+			r.ac2 = 'opus';
+			return;
+		}
+
 		var dv = can_ogg ? 'opus' : can_caf ? 'caf' : 'mp3',
 			fmts = ['opus', 'owa', 'caf', 'mp3'],
 			btns = [];
