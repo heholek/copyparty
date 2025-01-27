@@ -2449,6 +2449,8 @@ var mpl = (function () {
 
 		for (var a = 0; a < fmts.length; a++) {
 			var btn = ebi('ac2' + fmts[a]);
+			if (!btn)
+				return console.log('!btn', fmts[a]);
 			btn.onclick = r.set_ac2;
 			btns.push(btn);
 		}

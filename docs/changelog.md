@@ -1,4 +1,30 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0125-1809  `v1.16.10`  iOS9 is fine too
+
+## 🧪 new features
+
+* support audio playback on *really old* apple devices c9eba39e
+  * will now transcode to mp3 when necessary, since iOS didn't support opus-in-caf before iOS 11
+* support audio playback on *future* apple devices 28c9de3f 95390b65
+  * iOS 17.5 introduced support for opus-in-weba (like webp just audio instead) and, unlike caf, this intentionally supports vbr-opus (awesome)
+  * ...but the current code in iOS is too buggy, so this new format is default-disabled and we'll stick to caf for now fff38f48
+* ZeroMQ event-hooks can reject uploads 3a5c1d9f
+  * see [the example zmq listener](https://github.com/9001/copyparty/blob/1dace720/bin/zmq-recv.py#L26-L28)
+* chat with ZeroMQ event-hooks from javascript cdd3b67a
+  * replies from ZMQ REP servers are included in the msg-to-log responses
+  * which makes [this joke](https://github.com/9001/copyparty/blob/hovudstraum/bin/hooks/usb-eject.py) possible f38c7543
+
+## 🩹 bugfixes
+
+* nope
+
+## 🔧 other changes
+
+* option to restrict the recent-uploads listing to admins-only b8b5214f
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0122-2326  `v1.16.9`  ZeroMQ says hello
 
 ## 🧪 new features
