@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import print_function, unicode_literals
 
-S_VERSION = "2.8"
-S_BUILD_DT = "2025-01-21"
+S_VERSION = "2.9"
+S_BUILD_DT = "2025-01-27"
 
 """
 u2c.py: upload to copyparty
@@ -233,6 +233,10 @@ MO = "application/octet-stream"
 CLEN = "Content-Length"
 
 web = None  # type: HCli
+
+links = []  # type: list[str]
+linkmtx = threading.Lock()
+linkfile = None
 
 
 class File(object):
@@ -761,6 +765,29 @@ def get_hashlist(file, pcb, mth):
             file.kchunks[k] = [v1, v2]
 
 
+def printlink(ar, purl, name, fk):
+    if not name:
+        url = purl  # srch
+    else:
+        name = quotep(name.encode("utf-8", WTF8)).decode("utf-8")
+        if fk:
+            url = "%s%s?k=%s" % (purl, name, fk)
+        else:
+            url = "%s%s" % (purl, name)
+
+    url = "%s/%s" % (ar.burl, url.lstrip("/"))
+
+    with linkmtx:
+        if ar.u:
+            links.append(url)
+        if ar.ud:
+            print(url)
+        if linkfile:
+            zs = "%s\n" % (url,)
+            zb = zs.encode("utf-8", "replace")
+            linkfile.write(zb)
+
+
 def handshake(ar, file, search):
     # type: (argparse.Namespace, File, bool) -> tuple[list[str], bool]
     """
@@ -832,11 +859,16 @@ def handshake(ar, file, search):
         raise Exception(txt)
 
     if search:
+        if ar.uon and r["hits"]:
+            printlink(ar, r["hits"][0]["rp"], "", "")
         return r["hits"], False
 
     file.url = quotep(r["purl"].encode("utf-8", WTF8)).decode("utf-8")
     file.name = r["name"]
     file.wark = r["wark"]
+
+    if ar.uon and not r["hash"]:
+        printlink(ar, file.url, r["name"], r.get("fk"))
 
     return r["hash"], r["sprs"]
 
@@ -1472,7 +1504,7 @@ class APF(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFor
 
 
 def main():
-    global web
+    global web, linkfile
 
     time.strptime("19970815", "%Y%m%d")  # python#7980
     "".encode("idna")  # python#29288
@@ -1508,6 +1540,11 @@ source file/folder selection uses rsync syntax, meaning that:
     ap.add_argument("--ow", action="store_true", help="overwrite existing files instead of autorenaming")
     ap.add_argument("--spd", action="store_true", help="print speeds for each file")
     ap.add_argument("--version", action="store_true", help="show version and exit")
+
+    ap = app.add_argument_group("print links")
+    ap.add_argument("-u", action="store_true", help="print list of download-links after all uploads finished")
+    ap.add_argument("-ud", action="store_true", help="print download-link after each upload finishes")
+    ap.add_argument("-uf", type=unicode, metavar="PATH", help="print list of download-links to file")
 
     ap = app.add_argument_group("compatibility")
     ap.add_argument("--cls", action="store_true", help="clear screen before start")
@@ -1594,6 +1631,10 @@ source file/folder selection uses rsync syntax, meaning that:
     ar.x = "|".join(ar.x or [])
 
     setattr(ar, "wlist", ar.url == "-")
+    setattr(ar, "uon", ar.u or ar.ud or ar.uf)
+
+    if ar.uf:
+        linkfile = open(ar.uf, "wb")
 
     for k in "dl dr drd wlist".split():
         errs = []
@@ -1655,6 +1696,12 @@ source file/folder selection uses rsync syntax, meaning that:
         ar.drd = True
         ar.z = True
         ctl = Ctl(ar, ctl.stats)
+
+    if links:
+        print()
+        print("\n".join(links))
+    if linkfile:
+        linkfile.close()
 
     if ctl.errs:
         print("WARNING: %d errors" % (ctl.errs))
