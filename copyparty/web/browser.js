@@ -2579,16 +2579,17 @@ var mpl = (function () {
 var za,
 	can_ogg = true,
 	can_owa = false,
-	can_caf = IPHONE && !/ OS ([1-9]|1[01])_/.test(UA);
+	can_caf = APPLE && !/ OS ([1-9]|1[01])_/.test(UA);
 try {
 	za = new Audio();
 	can_ogg = za.canPlayType('audio/ogg; codecs=opus') === 'probably';
 	can_owa = za.canPlayType('audio/webm; codecs=opus') === 'probably';
+	can_caf = za.canPlayType('audio/x-caf') && can_caf; //'maybe'
 }
 catch (ex) { }
 za = null;
 
-if (can_owa && IPHONE && / OS ([1-9]|1[0-7])_/.test(UA))
+if (can_owa && APPLE && / OS ([1-9]|1[0-7])_/.test(UA))
 	can_owa = false;
 
 mpl.init_ac2();

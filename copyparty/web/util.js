@@ -37,7 +37,9 @@ var wah = '',
     IPHONE = TOUCH && /iPhone|iPad|iPod/i.test(UA),
     LINUX = /Linux/.test(UA),
     MACOS = /Macintosh/.test(UA),
-    WINDOWS = /Windows/.test(UA);
+    WINDOWS = /Windows/.test(UA),
+    APPLE = IPHONE || MACOS,
+    APPLEM = TOUCH && APPLE;
 
 if (!window.WebAssembly || !WebAssembly.Memory)
     window.WebAssembly = false;
@@ -432,7 +434,7 @@ function import_js(url, cb, ecb) {
 
 
 function unsmart(txt) {
-    return !IPHONE ? txt : (txt.
+    return !APPLEM ? txt : (txt.
         replace(/[\u2014]/g, "--").
         replace(/[\u2022]/g, "*").
         replace(/[\u2018\u2019]/g, "'").
@@ -1357,7 +1359,7 @@ var tt = (function () {
     };
 
     r.getmsg = function (el) {
-        if (IPHONE && QS('body.bbox-open'))
+        if (APPLEM && QS('body.bbox-open'))
             return;
 
         var cfg = sread('tooltips');
