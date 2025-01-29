@@ -1,5 +1,18 @@
-# ./traefik --experimental.fastproxy=true --entrypoints.web.address=:8080 --providers.file.filename=copyparty.yaml
+# ./traefik --configFile=copyparty.yaml
 
+entryPoints:
+  web:
+    address: :8080
+    transport:
+      # don't disconnect during big uploads
+      respondingTimeouts:
+        readTimeout: "0s"
+log:
+  level: DEBUG
+providers:
+  file:
+    # WARNING: must be same filename as current file
+    filename: "copyparty.yaml"
 http:
   services:
     service-cpp:
