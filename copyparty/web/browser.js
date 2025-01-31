@@ -2220,6 +2220,7 @@ var ACtx = !IPHONE && (window.AudioContext || window.webkitAudioContext),
 	hash0 = location.hash,
 	sloc0 = '' + location,
 	noih = /[?&]v\b/.exec(sloc0),
+	rtt = null,
 	ldks = [],
 	dks = {},
 	dk, mp;
@@ -7698,6 +7699,8 @@ var treectl = (function () {
 		if (!xhrchk(this, L.fl_xe1, L.fl_xe2))
 			return;
 
+		rtt = Date.now() - this.ts;
+
 		r.nextdir = null;
 		var cdir = get_evpath(),
 			lfiles = ebi('files'),
@@ -7741,10 +7744,12 @@ var treectl = (function () {
 		dk = res.dk;
 
 		srvinf = res.srvinf;
-		try {
-			ebi('srv_info').innerHTML = ebi('srv_info2').innerHTML = '<span>' + res.srvinf + '</span>';
-		}
-		catch (ex) { }
+		if (rtt !== null)
+			srvinf += (srvinf ? '</span> // <span>rtt: ' : 'rtt: ') + rtt;
+
+		var o = ebi('srv_info2');
+		if (o)
+			o.innerHTML = ebi('srv_info').innerHTML = '<span>' + srvinf + '</span>';
 
 		if (this.hpush && !showfile.active())
 			hist_push(this.top + (dk ? '?k=' + dk : ''));
