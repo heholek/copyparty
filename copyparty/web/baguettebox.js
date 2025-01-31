@@ -633,6 +633,9 @@ window.baguetteBox = (function () {
         catch (ex) { }
         isFullscreen = false;
 
+        if (toast.tag == 'bb-ded')
+            toast.hide();
+
         if (dtor || overlay.style.display === 'none')
             return;
 
@@ -668,6 +671,7 @@ window.baguetteBox = (function () {
             if (v == keep)
                 continue;
 
+            unbind(v, 'error', lerr);
             v.src = '';
             v.load();
 
@@ -693,6 +697,28 @@ window.baguetteBox = (function () {
             if (!has(k, f.getAttribute('id')))
                 f.parentNode.removeChild(f);
         }
+    }
+
+    function lerr() {
+        var t;
+        try {
+            t = this.getAttribute('src');
+            t = uricom_dec(t.split('/').pop().split('?')[0]);
+        }
+        catch (ex) { }
+
+        t = 'Failed to open ' + (t?t:'file');
+        console.log('bb-ded', t);
+        t += '\n\nEither the file is corrupt, or your browser does not understand the file format or codec';
+
+        try {
+            t += "\n\nerr#" + this.error.code + ", " + this.error.message;
+        }
+        catch (ex) { }
+ 
+        this.ded = esc(t);
+        if (this === vidimg())
+            toast.err(20, this.ded, 'bb-ded');
     }
 
     function loadImage(index, callback) {
@@ -739,7 +765,8 @@ window.baguetteBox = (function () {
         var image = mknod(is_vid ? 'video' : 'img');
         clmod(imageContainer, 'vid', is_vid);
 
-        image.addEventListener(is_vid ? 'loadedmetadata' : 'load', function () {
+        bind(image, 'error', lerr);
+        bind(image, is_vid ? 'loadedmetadata' : 'load', function () {
             // Remove loader element
             qsr('#baguette-img-' + index + ' .bbox-spinner');
             if (!options.async && callback)
@@ -815,6 +842,12 @@ window.baguetteBox = (function () {
             preloadPrev(currentIndex);
         });
         updateOffset();
+
+        var im = vidimg();
+        if (im && im.ded)
+            toast.err(20, im.ded, 'bb-ded');
+        else if (toast.tag == 'bb-ded')
+            toast.hide();
 
         if (options.animation == 'none')
             unvid(vid());
