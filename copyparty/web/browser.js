@@ -7660,14 +7660,18 @@ var treectl = (function () {
 
 		var xhr = new XHR(),
 			m = /[?&](k=[^&#]+)/.exec(url),
-			k = m ? '&' + m[1] : dk ? '&k=' + dk : '';
+			k = m ? '&' + m[1] : dk ? '&k=' + dk : '',
+			uq = (r.dots ? '&dots' : '') + k;
+
+		if (rtt !== null)
+			uq += '&rtt=' + rtt;
 
 		xhr.top = url.split('?')[0];
 		xhr.back = back
 		xhr.hpush = hpush;
 		xhr.hydrate = hydrate;
 		xhr.ts = Date.now();
-		xhr.open('GET', xhr.top + '?ls' + (r.dots ? '&dots' : '') + k, true);
+		xhr.open('GET', xhr.top + '?ls' + uq, true);
 		xhr.onload = xhr.onerror = recvls;
 		xhr.send();
 
