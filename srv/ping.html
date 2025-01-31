@@ -56,6 +56,10 @@ input {
 			<td><input id="delay" type="text" value="1000" size="7" /></td>
 		</tr>
 		<tr>
+			<td>num pings:</td>
+			<td><input id="more" type="text" value="100" size="7" /></td>
+		</tr>
+		<tr>
 			<td>&nbsp;</td>
 			<td><input id="start" type="button" value="start" onclick="okgo();return false" /></td>
 	</table>
@@ -65,14 +69,14 @@ input {
 			<td>avg</td>
 			<td>med</td>
 			<td>max</td>
-			<td>jitter</td>
+			<td>mdev</td>
 		</tr>
 		<tr>
 			<td id="min">x</td>
 			<td id="avg">x</td>
 			<td id="med">x</td>
 			<td id="max">x</td>
-			<td id="jit">x</td>
+			<td id="mdv">x</td>
 		</tr>
 	</table>
 	<div id="log">
@@ -92,11 +96,16 @@ var log = [],
 	srt = [],
 	delay,
 	t0 = -1,
+	nbad = 0,
+	min = 9999999,
+	max = 0,
+	sum = 0,
+	sum2 = 0,
 	omin = ebi('min'),
 	omax = ebi('max'),
 	oavg = ebi('avg'),
 	omed = ebi('med'),
-	ojit = ebi('jit'),
+	omdv = ebi('mdv'),
 	olog = ebi('log');
 
 function insert(t, v) {
@@ -110,12 +119,24 @@ function insert(t, v) {
 	}
 	t.splice(lo, 0, v);
 }
+function f2f(val, nd) {
+    val = (parseFloat(val) * Math.pow(10, nd)).toFixed(0).split('.')[0];
+    return nd ? (val.slice(0, -nd) || '0') + '.' + val.slice(-nd) : val;
+}
 function okgo() {
 	if (t0 < 0)
 		ping();
 }
 function ping() {
 	var xh,
+		more = parseInt(ebi('more').value) - 1,
+		stats = [omin.innerHTML, omed.innerHTML, omax.innerHTML, omdv.innerHTML];
+
+	if (more < 0)
+		return;
+
+	if (more > 499)
+		more = 499;
 
 	delay = parseInt(ebi('delay').value);
 	if (delay < 100)
@@ -138,40 +159,39 @@ function ping() {
 			ok = rsp.indexOf('o7') === 0;
 
 		if (!ok)
-			alert("ping response invalid or corrupted: " + xh.resp);
+			nbad++;
 
+		sum += t;
+		sum2 += t * t;
 		log.push(t);
 		insert(srt, t);
 
-		var min = 9999999,
-			avg = 0,
-			max = 0;
+		if (min > t)
+			min = t;
 
-		for (var a=0; a<log.length; a++) {
-			min = Math.min(min, log[a]);
-			max = Math.max(max, log[a]);
-			avg += log[a];
-		}
-		avg /= log.length;
-		var med = srt[Math.floor(srt.length/2)],
-			jofs = Math.floor((5*srt.length)/6),
-			jit = '?';
+		if (max < t)
+			max = t;
 
-		if (jofs < srt.length) {
-			jit = srt[jofs] - med;
-			jit = Math.round((jit / med) * 100) + '%';
-		}
+		var avg = sum / log.length,
+			smean = sum2 / log.length,
+			med = srt[Math.floor(srt.length/2)],
+			mdev = Math.sqrt(smean-(avg*avg));
+
 		omin.innerHTML = min;
 		omax.innerHTML = max;
 		oavg.innerHTML = Math.round(avg);
 		omed.innerHTML = med;
-		olog.innerHTML = log.join(', ') + '<br /><br />' + srt.join(', ');
+		omdv.innerHTML = f2f(mdev, 2);
+		olog.innerHTML = log.join(', ') + '<br /><br />' + srt.join(', ') + (
+			nbad ? "<br /><br />invalid/corrupted ping responses: " + nbad : '');
 		setTimeout(ping, delay);
 	};
 	t0 = new Date().getTime();
 	stats.push(t0);
 	xh.open("GET", "/?setck=a=x&ping="+stats.join(","), true);
 	xh.send();
+
+	ebi('more').value = more;
 	olog.innerHTML += '<br /><br />ping...';
 }
 </script>
