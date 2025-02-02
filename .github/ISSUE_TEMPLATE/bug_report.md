@@ -29,6 +29,7 @@ if the issue is possibly on the server-side, then mention some of the following:
 * python version: 
 * copyparty arguments: 
 * filesystem (`lsblk -f` on linux): 
+* run copyparty with `--version` and copy the last 3 lines
 
 **Client details**
 if the issue is possibly on the client-side, then mention some of the following:

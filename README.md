@@ -1579,6 +1579,8 @@ connecting to an aws s3 bucket and similar
 
 there is no built-in support for this, but you can use FUSE-software such as [rclone](https://rclone.org/) / [geesefs](https://github.com/yandex-cloud/geesefs) / [JuiceFS](https://juicefs.com/en/) to first mount your cloud storage as a local disk, and then let copyparty use (a folder in) that disk as a volume
 
+if copyparty is unable to access the local folder that rclone/geesefs/JuiceFS provides (for example if it looks invisible) then you may need to run rclone with `--allow-other` and/or enable `user_allow_other` in `/etc/fuse.conf`
+
 you will probably get decent speeds with the default config, however most likely restricted to using one TCP connection per file, so the upload-client won't be able to send multiple chunks in parallel
 
 > before [v1.13.5](https://github.com/9001/copyparty/releases/tag/v1.13.5) it was recommended to use the volflag `sparse` to force-allow multiple chunks in parallel; this would improve the upload-speed from `1.5 MiB/s` to over `80 MiB/s` at the risk of provoking latent bugs in S3 or JuiceFS. But v1.13.5 added chunk-stitching, so this is now probably much less important. On the contrary, `nosparse` *may* now increase performance in some cases. Please try all three options (default, `sparse`, `nosparse`) as the optimal choice depends on your network conditions and software stack (both the FUSE-driver and cloud-server)
