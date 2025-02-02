@@ -163,6 +163,7 @@ class MCast(object):
             sck.settimeout(None)
             sck.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             try:
+                # safe for this purpose; https://lwn.net/Articles/853637/
                 sck.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
             except:
                 pass

@@ -4825,7 +4825,7 @@ class HttpCli(object):
 
     def scanvol(self) -> bool:
         if not self.can_admin:
-            raise Pebkac(403, "not allowed for user " + self.uname)
+            raise Pebkac(403, "'scanvol' not allowed for user " + self.uname)
 
         if self.args.no_rescan:
             raise Pebkac(403, "the rescan feature is disabled in server config")
@@ -4848,7 +4848,7 @@ class HttpCli(object):
             raise Pebkac(400, "only config files ('cfg') can be reloaded rn")
 
         if not self.avol:
-            raise Pebkac(403, "not allowed for user " + self.uname)
+            raise Pebkac(403, "'reload' not allowed for user " + self.uname)
 
         if self.args.no_reload:
             raise Pebkac(403, "the reload feature is disabled in server config")
@@ -4858,7 +4858,7 @@ class HttpCli(object):
 
     def tx_stack(self) -> bool:
         if not self.avol and not [x for x in self.wvol if x in self.rvol]:
-            raise Pebkac(403, "not allowed for user " + self.uname)
+            raise Pebkac(403, "'stack' not allowed for user " + self.uname)
 
         if self.args.no_stack:
             raise Pebkac(403, "the stackdump feature is disabled in server config")
@@ -5421,7 +5421,7 @@ class HttpCli(object):
 
     def handle_rm(self, req: list[str]) -> bool:
         if not req and not self.can_delete:
-            raise Pebkac(403, "not allowed for user " + self.uname)
+            raise Pebkac(403, "'delete' not allowed for user " + self.uname)
 
         if self.args.no_del:
             raise Pebkac(403, "the delete feature is disabled in server config")

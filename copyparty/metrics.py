@@ -18,7 +18,7 @@ class Metrics(object):
 
     def tx(self, cli: "HttpCli") -> bool:
         if not cli.avol:
-            raise Pebkac(403, "not allowed for user " + cli.uname)
+            raise Pebkac(403, "'stats' not allowed for user " + cli.uname)
 
         args = cli.args
         if not args.stats:
