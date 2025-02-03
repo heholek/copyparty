@@ -11,31 +11,38 @@ NOTE:
 all of the below are optional, consider them as inspiration, delete and rewrite at will, thx md
 
 
-**Describe the bug**
+### Describe the bug
 a description of what the bug is
 
-**To Reproduce**
+### To Reproduce
 List of steps to reproduce the issue, or, if it's hard to reproduce, then at least a detailed explanation of what you did to run into it
 
-**Expected behavior**
+### Expected behavior
 a description of what you expected to happen
 
-**Screenshots**
+### Screenshots
 if applicable, add screenshots to help explain your problem, such as the kickass crashpage :^)
 
-**Server details**
-if the issue is possibly on the server-side, then mention some of the following:
-* server OS / version: 
-* python version: 
-* copyparty arguments: 
-* filesystem (`lsblk -f` on linux): 
-* run copyparty with `--version` and copy the last 3 lines
+### Server details (if you are using docker/podman)
+remove the ones that are not relevant:
+* **server OS / version:** 
+* **how you're running copyparty:** (docker/podman/something-else)
+* **docker image:** (variant, version, and arch if you know)
+* **copyparty arguments and/or config-file:** 
 
-**Client details**
+### Server details (if you're NOT using docker/podman)
+remove the ones that are not relevant:
+* **server OS / version:** 
+* **what copyparty did you grab:** (sfx/exe/pip/aur/...)
+* **how you're running it:** (in a terminal, as a systemd-service, ...)
+* run copyparty with `--version` and grab the last 3 lines (they start with `copyparty`, `CPython`, `sqlite`) and paste them below this line:
+* **copyparty arguments and/or config-file:** 
+
+### Client details
 if the issue is possibly on the client-side, then mention some of the following:
 * the device type and model: 
 * OS version: 
 * browser version: 
 
-**Additional context**
+### Additional context
 any other context about the problem here
