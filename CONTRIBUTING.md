@@ -28,6 +28,8 @@ aside from documentation and ideas, some other things that would be cool to have
 
 * **translations** -- the copyparty web-UI has translations for english and norwegian at the top of [browser.js](https://github.com/9001/copyparty/blob/hovudstraum/copyparty/web/browser.js); if you'd like to add a translation for another language then that'd be welcome! and if that language has a grammar that doesn't fit into the way the strings are assembled, then we'll fix that as we go :>
 
+  * but please note that support for [RTL (Right-to-Left) languages](https://en.wikipedia.org/wiki/Right-to-left_script) is currently not planned, since the javascript is a bit too jank for that
+
 * **UI ideas** -- at some point I was thinking of rewriting the UI in react/preact/something-not-vanilla-javascript, but I'll admit the comfiness of not having any build stage combined with raw performance has kinda convinced me otherwise :p but I'd be very open to ideas on how the UI could be improved, or be more intuitive.
 
 * **docker improvements** -- I don't really know what I'm doing when it comes to containers, so I'm sure there's a *huge* room for improvement here, mainly regarding how you're supposed to use the container with kubernetes / docker-compose / any of the other popular ways to do things. At some point I swear I'll start learning about docker so I can pick up clach04's [docker-compose draft](https://github.com/9001/copyparty/issues/38) and learn how that stuff ticks, unless someone beats me to it!

@@ -61,6 +61,8 @@ if the value starts with `%` it will assume a jinja2 template and expand it; the
 
 add your own translations by using the english or norwegian one from `browser.js` as a template
 
+> ⚠ Please do not contribute translations to [RTL (Right-to-Left) languages](https://en.wikipedia.org/wiki/Right-to-left_script) for now; the javascript is [not ready](https://github.com/9001/copyparty/blob/hovudstraum/docs/rice/rtl.patch) to deal with it
+
 the easy way is to open up and modify `browser.js` in your own installation; depending on how you installed copyparty it might be named `browser.js.gz` instead, in which case just decompress it, restart copyparty, and start editing it anyways
 
 you will be delighted to see inline html in the translation strings; to help prevent syntax errors, there is [a very jank linux script](https://github.com/9001/copyparty/blob/hovudstraum/scripts/tlcheck.sh) which is slightly better than nothing -- just beware the false-positives, so even if it complains it's not necessarily wrong/bad
