@@ -8722,12 +8722,12 @@ var settheme = (function () {
 (function () {
 	function freshen() {
 		lang = sread("cpp_lang", LANGS) || lang;
-		var html = [];
-		for (var k in Ls)
-			if (Ls.hasOwnProperty(k))
-				html.push('<a href="#" class="btn tgl' + (k == lang ? ' on' : '') +
-					'" tt="' + Ls[k].tt + '">' + k + '</a>');
-
+		var k, html = [];
+		for (var a = 0; a < LANGS.length; a++) {
+			k = LANGS[a];
+			html.push('<a href="#" class="btn tgl' + (k == lang ? ' on' : '') +
+				'" tt="' + Ls[k].tt + '">' + k + '</a>');
+		}
 		ebi('langs').innerHTML = html.join('');
 		var btns = QSA('#langs a');
 		for (var a = 0, aa = btns.length; a < aa; a++)
