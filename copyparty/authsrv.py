@@ -1914,7 +1914,7 @@ class AuthSrv(object):
                 if k not in vol.flags:
                     vol.flags[k] = getattr(self.args, k)
 
-            for k in ("nrand", "u2abort"):
+            for k in ("nrand", "u2abort", "ups_who", "zip_who"):
                 if k in vol.flags:
                     vol.flags[k] = int(vol.flags[k])
 

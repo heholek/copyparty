@@ -94,6 +94,7 @@ def vf_vmap() -> dict[str, str]:
         "u2abort",
         "u2ts",
         "ups_who",
+        "zip_who",
     ):
         ret[k] = k
     return ret
@@ -252,6 +253,8 @@ flagcats = {
         "dots": "allow all users with read-access to\nenable the option to show dotfiles in listings",
         "fk=8": 'generates per-file accesskeys,\nwhich are then required at the "g" permission;\nkeys are invalidated if filesize or inode changes',
         "fka=8": 'generates slightly weaker per-file accesskeys,\nwhich are then required at the "g" permission;\nnot affected by filesize or inode numbers',
+        "ups_who=2": "restrict viewing the list of recent uploads",
+        "zip_who=2": "restrict access to download-as-zip/tar",
         "mv_retry": "ms-windows: timeout for renaming busy files",
         "rm_retry": "ms-windows: timeout for deleting busy files",
         "davauth": "ask webdav clients to login for all folders",

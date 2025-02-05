@@ -4283,8 +4283,14 @@ class HttpCli(object):
         rem: str,
         items: list[str],
     ) -> bool:
-        if self.args.no_zip:
-            raise Pebkac(400, "not enabled in server config")
+        lvl = vn.flags["zip_who"]
+        if self.args.no_zip or not lvl:
+            raise Pebkac(400, "download-as-zip/tar is disabled in server config")
+        elif lvl <= 1 and not self.can_admin:
+            raise Pebkac(400, "download-as-zip/tar is admin-only on this server")
+        elif lvl <= 2 and self.uname in ("", "*"):
+            t = "you must be authenticated to download-as-zip/tar on this server"
+            raise Pebkac(400, t)
 
         logmsg = "{:4} {} ".format("", self.req)
         self.keepalive = False
@@ -5152,7 +5158,7 @@ class HttpCli(object):
             adm = "*" in vol.axs.uadmin or self.uname in vol.axs.uadmin
             dots = "*" in vol.axs.udot or self.uname in vol.axs.udot
 
-            lvl = int(vol.flags["ups_who"])
+            lvl = vol.flags["ups_who"]
             if not lvl:
                 continue
             elif lvl == 1 and not adm:
