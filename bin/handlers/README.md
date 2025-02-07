@@ -20,6 +20,7 @@ each plugin must define a `main()` which takes 3 arguments;
 
 ## on404
 
+* [redirect.py](redirect.py) sends an HTTP 301 or 302, redirecting the client to another page/file
 * [sorry.py](answer.py) replies with a custom message instead of the usual 404
 * [nooo.py](nooo.py) replies with an endless noooooooooooooo
 * [never404.py](never404.py) 100% guarantee that 404 will never be a thing again as it automatically creates dummy files whenever necessary
