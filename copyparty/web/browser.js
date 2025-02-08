@@ -7835,7 +7835,7 @@ var treectl = (function () {
 	r.gentab = function (top, res) {
 		var nodes = res.dirs.concat(res.files),
 			html = mk_files_header(res.taglist),
-			sel = r.lsc === res ? msel.getsel() : [],
+			sel = msel.hist[top],
 			ae = document.activeElement,
 			cid = null,
 			plain = [],
@@ -7946,10 +7946,7 @@ var treectl = (function () {
 				apply_perms(res);
 				fileman.render();
 			}
-			if (sel.length)
-				msel.loadsel(sel);
-			else
-				msel.origin_id(null);
+			msel.loadsel(top, sel);
 
 			if (cid) try {
 				ebi(cid).closest('tr').focus();
@@ -8831,6 +8828,7 @@ var msel = (function () {
 	var r = {};
 	r.sel = null;
 	r.all = null;
+	r.hist = {};
 	r.so = null;  // selection origin
 	r.pr = null;  // previous range
 
@@ -8879,10 +8877,14 @@ var msel = (function () {
 		}
 	};
 
-	r.loadsel = function (sel) {
+	r.loadsel = function (vp, sel) {
 		if (!sel || !r.so || !ebi(r.so))
 			r.so = r.pr = null;
 
+		if (!sel)
+			return r.origin_id(null);
+
+		r.hist[vp] = sel;
 		r.sel = [];
 		r.load();
 
@@ -8914,6 +8916,11 @@ var msel = (function () {
 		thegrid.loadsel();
 		fileman.render();
 		showfile.updtree();
+
+		if (r.sel.length)
+			r.hist[get_evpath()] = r.sel;
+		else
+			delete r.hist[get_evpath()];
 	};
 	r.seltgl = function (e) {
 		ev(e);
