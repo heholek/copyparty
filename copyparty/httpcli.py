@@ -1233,6 +1233,20 @@ class HttpCli(object):
                 else:
                     return self.tx_404(True)
             else:
+                vfs = self.asrv.vfs
+                if (
+                    not vfs.nodes
+                    and not vfs.axs.uread
+                    and not vfs.axs.uwrite
+                    and not vfs.axs.uget
+                    and not vfs.axs.uhtml
+                    and not vfs.axs.uadmin
+                ):
+                    t = "<h2>access denied due to failsafe; check server log</h2>"
+                    html = self.j2s("splash", this=self, msg=t)
+                    self.reply(html.encode("utf-8", "replace"), 500)
+                    return True
+
                 if self.vpath:
                     ptn = self.args.nonsus_urls
                     if not ptn or not ptn.search(self.vpath):

@@ -1515,6 +1515,14 @@ class AuthSrv(object):
         if not mount and not self.args.idp_h_usr:
             # -h says our defaults are CWD at root and read/write for everyone
             axs = AXS(["*"], ["*"], None, None)
+            if os.path.exists("/z/initcfg"):
+                t = "Read-access has been disabled due to failsafe: Docker detected, but the config does not define any volumes. This failsafe is to prevent unintended access if this is due to accidental loss of config. You can override this safeguard and allow read/write to all of /w/ by adding the following arguments to the docker container:  -v .::rw"
+                self.log(t, 1)
+                axs = AXS()
+            elif self.args.c:
+                t = "Read-access has been disabled due to failsafe: No volumes were defined by the config-file. This failsafe is to prevent unintended access if this is due to accidental loss of config. You can override this safeguard and allow read/write to the working-directory by adding the following arguments:  -v .::rw"
+                self.log(t, 1)
+                axs = AXS()
             vfs = VFS(self.log_func, absreal("."), "", axs, {})
         elif "" not in mount:
             # there's volumes but no root; make root inaccessible
