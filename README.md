@@ -258,7 +258,7 @@ also see [comparison to similar software](./docs/versus.md)
   * ☑ search by name/path/date/size
   * ☑ [search by ID3-tags etc.](#searching)
 * client support
-  * ☑ [folder sync](#folder-sync)
+  * ☑ [folder sync](#folder-sync) (one-way only; full sync will never be supported)
   * ☑ [curl-friendly](https://user-images.githubusercontent.com/241032/215322619-ea5fd606-3654-40ad-94ee-2bc058647bb2.png)
   * ☑ [opengraph](#opengraph) (discord embeds)
 * markdown
@@ -483,8 +483,8 @@ and if you want to use config files instead of commandline args (good!) then her
   u2: p2  #  (note that comments must have
   u3: p3  #   two spaces before the # sign)
 
-[/]       # this URL will be mapped to...
-  /srv    # ...this folder on the server filesystem
+[/]     # this URL will be mapped to...
+  /srv  # ...this folder on the server filesystem
   accs:
     r: *  # read-only for everyone, no account necessary
 
@@ -516,7 +516,7 @@ hiding specific subfolders  by mounting another volume on top of them
 
 for example `-v /mnt::r -v /var/empty:web/certs:r` mounts the server folder `/mnt` as the webroot, but another volume is mounted at `/web/certs` -- so visitors can only see the contents of `/mnt` and `/mnt/web` (at URLs `/` and `/web`), but not `/mnt/web/certs` because URL `/web/certs` is mapped to `/var/empty`
 
-the example config file right above this section may explain this better; the first volume `/` is mapped to `/srv` which means http://127.0.0.1:3923/music would try to read `/srv/music` on the server filesystem, but since there's another volume at `/music` then it'll go to `/mnt/music` instead
+the example config file right above this section may explain this better; the first volume `/` is mapped to `/srv` which means http://127.0.0.1:3923/music would try to read `/srv/music` on the server filesystem, but since there's another volume at `/music` mapped to `/mnt/music` then it'll go to `/mnt/music` instead
 
 
 ## dotfiles
@@ -1137,7 +1137,9 @@ config file example:
 
 ```yaml
 [global]
-  z-on: 192.168.0.0/16, 10.1.2.0/24
+  z      # enable all zeroconf features (mdns, ssdp)
+  zm     # only enables mdns (does nothing since we already have z)
+  z-on: 192.168.0.0/16, 10.1.2.0/24  # restrict to certain subnets
 ```
 
 
@@ -2311,6 +2313,8 @@ NOTE: curl will not send the original filename if you use `-T` combined with url
 ## folder sync
 
 sync folders to/from copyparty
+
+NOTE: full bidirectional sync, like what [nextcloud](https://docs.nextcloud.com/server/latest/user_manual/sv/files/desktop_mobile_sync.html) and [syncthing](https://syncthing.net/) does, will never be supported! Only single-direction sync (server-to-client, or client-to-server) is possible with copyparty
 
 the commandline uploader [u2c.py](https://github.com/9001/copyparty/tree/hovudstraum/bin#u2cpy) with `--dr` is the best way to sync a folder to copyparty; verifies checksums and does files in parallel, and deletes unexpected files on the server after upload has finished which makes file-renames really cheap (it'll rename serverside and skip uploading)
 

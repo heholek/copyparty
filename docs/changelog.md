@@ -1,4 +1,21 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0127-0140  `v1.16.11`  fix no-acode
+
+## 🧪 new features
+
+* u2c (commandline uploader): print download-links for uploaded files 1fe30363
+  * `-u` prints a list after all uploads finished
+  * `-ud` print during upload, after each file
+  * `-uf a.txt` writes them to `a.txt`
+
+## 🩹 bugfixes
+
+* [previous ver](https://github.com/9001/copyparty/releases/tag/v1.16.10) broke `--no-acode` (disable audio transcoding) by showing javascript errors 54a7256c
+  * reported on discord (thx)
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0125-1809  `v1.16.10`  iOS9 is fine too
 
 ## 🧪 new features
