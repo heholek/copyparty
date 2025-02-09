@@ -62,6 +62,7 @@ var Ls = {
 				["U/O", "skip 10sec back/fwd"],
 				["0..9", "jump to 0%..90%"],
 				["P", "play/pause (also initiates)"],
+				["S", "select playing song"],
 				["Y", "download song"],
 			], [
 				"image-viewer",
@@ -70,6 +71,7 @@ var Ls = {
 				["F", "fullscreen"],
 				["R", "rotate clockwise"],
 				["🡅 R", "rotate ccw"],
+				["S", "select pic"],
 				["Y", "download pic"],
 			], [
 				"video-player",
@@ -659,6 +661,7 @@ var Ls = {
 				["U/O", "hopp 10sek bak/frem"],
 				["0..9", "hopp til 0%..90%"],
 				["P", "pause, eller start / fortsett"],
+				["S", "marker spillende sang"],
 				["Y", "last ned sang"],
 			], [
 				"bildeviser",
@@ -667,6 +670,7 @@ var Ls = {
 				["F", "fullskjermvisning"],
 				["R", "rotere mot høyre"],
 				["🡅 R", "rotere mot venstre"],
+				["S", "marker bilde"],
 				["Y", "last ned bilde"],
 			], [
 				"videospiller",
@@ -681,7 +685,7 @@ var Ls = {
 				["I/K", "forr./neste fil"],
 				["M", "lukk tekstdokument"],
 				["E", "rediger tekstdokument"],
-				["S", "velg fil (for F2/ctrl-x/...)"],
+				["S", "marker fil (for F2/ctrl-x/...)"],
 				["Y", "last ned tekstfil"],
 			]
 		],
@@ -1258,6 +1262,7 @@ var Ls = {
 				["U/O", "跳过10秒向前/向后"],
 				["0..9", "跳转到0%..90%"],
 				["P",  "播放/暂停（也可以启动）"],
+				["S", "选择正在播放的歌曲"], //m
 				["Y", "下载歌曲"]
 			], [
 				"image-viewer",
@@ -1266,6 +1271,7 @@ var Ls = {
 				["F", "全屏"],
 				["R", "顺时针旋转"],
 				["🡅 R", "逆时针旋转"],
+				["S", "选择图片"], //m
 				["Y", "下载图片"]
 			], [
 				"video-player",
@@ -3351,6 +3357,14 @@ function dl_song() {
 	var url = addq(mp.au.osrc, 'cache=987&_=' + ACB);
 	dl_file(url);
 }
+function sel_song() {
+	var o = QS('#files tr.play');
+	if (!o)
+		return;
+	clmod(o, 'sel', 't');
+	msel.origin_tr(o);
+	msel.selui();
+}
 
 
 function playpause(e) {
@@ -4259,8 +4273,11 @@ function scan_hash(v) {
 
 
 function eval_hash() {
-	document.onkeydown = ahotkeys;
-	window.onpopstate = treectl.onpopfun;
+	if (!window.hotkeys_attached) {
+		window.hotkeys_attached = true;
+		document.onkeydown = ahotkeys;
+		window.onpopstate = treectl.onpopfun;
+	}
 
 	if (hash0 && window.og_fn) {
 		var all = msel.getall(), mi;
@@ -6804,6 +6821,11 @@ var ahotkeys = function (e) {
 			showfile.tglsel();
 		if ((k == 'KeyE' || k == 'e') && ebi('editdoc').style.display != 'none')
 			ebi('editdoc').click();
+	}
+
+	if (mp && mp.au && !mp.au.paused) {
+		if (k == 'KeyS')
+			return sel_song();
 	}
 
 	if (thegrid.en) {
