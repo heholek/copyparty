@@ -475,12 +475,48 @@ examples:
 
 anyone trying to bruteforce a password gets banned according to `--ban-pw`; default is 24h ban for 9 failed attempts in 1 hour
 
+and if you want to use config files instead of commandline args (good!) then here's the same examples as a configfile; save it as `foobar.conf` and use it like this: `python copyparty-sfx.py -c foobar.conf`
+
+```yaml
+[accounts]
+  u1: p1  # create account "u1" with password "p1"
+  u2: p2  #  (note that comments must have
+  u3: p3  #   two spaces before the # sign)
+
+[/]       # this URL will be mapped to...
+  /srv    # ...this folder on the server filesystem
+  accs:
+    r: *  # read-only for everyone, no account necessary
+
+[/music]       # create another volume at this URL,
+  /mnt/music   # which is mapped to this folder
+  accs:
+    r: u1, u2  # only these accounts can read,
+    rw: u3     # and only u3 can read-write
+
+[/inc]
+  /mnt/incoming
+  accs:
+    w: u1   # u1 can upload but not see/download any files,
+    rm: u2  # u2 can browse + move files out of this volume
+
+[/i]
+  /mnt/ss
+  accs:
+    rw: u1  # u1 can read-write,
+    g: *    # everyone can access files if they know the URL
+  flags:
+    fk: 4   # each file URL will have a 4-character password
+```
+
 
 ## shadowing
 
 hiding specific subfolders  by mounting another volume on top of them
 
 for example `-v /mnt::r -v /var/empty:web/certs:r` mounts the server folder `/mnt` as the webroot, but another volume is mounted at `/web/certs` -- so visitors can only see the contents of `/mnt` and `/mnt/web` (at URLs `/` and `/web`), but not `/mnt/web/certs` because URL `/web/certs` is mapped to `/var/empty`
+
+the example config file right above this section may explain this better; the first volume `/` is mapped to `/srv` which means http://127.0.0.1:3923/music would try to read `/srv/music` on the server filesystem, but since there's another volume at `/music` then it'll go to `/mnt/music` instead
 
 
 ## dotfiles
@@ -492,6 +528,19 @@ anyone can access these if they know the name, but they normally don't appear in
 a client can request to see dotfiles in directory listings if global option `-ed` is specified, or the volume has volflag `dots`, or the user has permission `.`
 
 dotfiles do not appear in search results unless one of the above is true, **and** the global option / volflag `dotsrch` is set
+
+config file example, where the same permission to see dotfiles is given in two different ways just for reference:
+
+```yaml
+[/foo]
+  /srv/foo
+  accs:
+    r.: ed   # user "ed" has read-access + dot-access in this volume;
+             # dotfiles are visible in listings, but not in searches
+  flags:
+    dotsrch  # dotfiles will now appear in search results too
+    dots     # another way to let everyone see dotfiles in this vol
+```
 
 
 # the browser
@@ -614,6 +663,23 @@ images with the following names (see `--th-covers`) become the thumbnail of the 
 enabling `multiselect` lets you click files to select them, and then shift-click another file for range-select
 * `multiselect` is mostly intended for phones/tablets, but the `sel` option in the `[⚙️] settings` tab is better suited for desktop use, allowing selection by CTRL-clicking and range-selection with SHIFT-click, all without affecting regular clicking
   * the `sel` option can be made default globally with `--gsel` or per-volume with volflag `gsel`
+
+config file example:
+
+```yaml
+[global]
+  no-thumb   # disable ALL thumbnails and audio transcoding
+  no-vthumb  # only disable video thumbnails
+
+[/music]
+  /mnt/nas/music
+  accs:
+    r: *     # everyone can read
+  flags:
+    dthumb   # disable ALL thumbnails and audio transcoding
+    dvthumb  # only disable video thumbnails
+    th-covers:  folder.png,folder.jpg,cover.png,cover.jpg  # the default
+```
 
 
 ## zip downloads
@@ -738,6 +804,14 @@ undo/delete accidental uploads  using the `[🧯]` tab in the UI
 ![copyparty-unpost-fs8](https://user-images.githubusercontent.com/241032/129635368-3afa6634-c20f-418c-90dc-ec411f3b3897.png)
 
 you can unpost even if you don't have regular move/delete access, however only for files uploaded within the past `--unpost` seconds (default 12 hours) and the server must be running with `-e2d`
+
+config file example:
+
+```yaml
+[global]
+  e2d            # enable up2k database (remember uploads)
+  unpost: 43200  # 12 hours (default)
+```
 
 
 ### self-destruct
@@ -904,6 +978,15 @@ will show uploader IP and upload-time if the visitor has the admin permission
 
 note that the [🧯 unpost](#unpost) feature is better suited for viewing *your own* recent uploads, as it includes the option to undo/delete them
 
+config file example:
+
+```yaml
+[global]
+  ups-when    # everyone can see upload times
+  ups-who: 1  # but only admins can see the list,
+              # so ups-when doesn't take effect
+```
+
 
 ## media player
 
@@ -1048,7 +1131,14 @@ using arguments or config files, or a mix of both:
 
 announce enabled services on the LAN ([pic](https://user-images.githubusercontent.com/241032/215344737-0eae8d98-9496-4256-9aa8-cd2f6971810d.png))  -- `-z` enables both [mdns](#mdns) and [ssdp](#ssdp)
 
-* `--z-on` / `--z-off`' limits the feature to certain networks
+* `--z-on` / `--z-off` limits the feature to certain networks
+
+config file example:
+
+```yaml
+[global]
+  z-on: 192.168.0.0/16, 10.1.2.0/24
+```
 
 
 ### mdns
@@ -1275,6 +1365,18 @@ advantages of using symlinks (default):
 
 global-option `--xlink` / volflag `xlink` additionally enables deduplication across volumes, but this is probably buggy and not recommended
 
+config file example:
+
+```yaml
+[global]
+  e2dsa  # scan and index filesystem on startup
+  dedup  # symlink-based deduplication for all volumes
+
+[/media]
+  /mnt/nas/media
+  flags:
+    hardlinkonly  # this vol does hardlinks instead of symlinks
+```
 
 
 ## file indexing
@@ -1306,6 +1408,14 @@ note:
 * `e2tsr` is probably always overkill, since `e2ds`/`e2dsa` would pick up any file modifications and `e2ts` would then reindex those, unless there is a new copyparty version with new parsers and the release note says otherwise
 * the rescan button in the admin panel has no effect unless the volume has `-e2ds` or higher
 
+config file example (these options are recommended btw):
+
+```yaml
+[global]
+  e2dsa  # scan and index all files in all volumes on startup
+  e2ts   # check newly-discovered or uploaded files for media tags
+```
+
 ### exclude-patterns
 
 to save some time,  you can provide a regex pattern for filepaths to only index by filename/path/size/last-modified (and not the hash of the file contents) by setting `--no-hash '\.iso$'` or the volflag `:c,nohash=\.iso$`, this has the following consequences:
@@ -1315,11 +1425,23 @@ to save some time,  you can provide a regex pattern for filepaths to only index 
 
 similarly, you can fully ignore files/folders using `--no-idx [...]` and `:c,noidx=\.iso$`
 
+NOTE: `no-idx` and/or `no-hash` prevents deduplication of those files
+
 * when running on macos, all the usual apple metadata files are excluded by default
 
 if you set `--no-hash [...]` globally, you can enable hashing for specific volumes using flag `:c,nohash=`
 
 to exclude certain filepaths from search-results, use `--srch-excl` or volflag `srch_excl` instead of `--no-idx`, for example `--srch-excl 'password|logs/[0-9]'`
+
+config file example:
+
+```yaml
+[/games]
+  /mnt/nas/games
+  flags:
+    noidx: \.iso$  # skip indexing iso-files
+    srch_excl: password|logs/[0-9]  # filter search results
+```
 
 ### filesystem guards
 
@@ -1340,6 +1462,20 @@ filesystem monitoring;  if copyparty is not the only software doing stuff on you
 argument `--re-maxage 60` will rescan all volumes every 60 sec, same as volflag `:c,scan=60` to specify it per-volume
 
 uploads are disabled while a rescan is happening, so rescans will be delayed by `--db-act` (default 10 sec) when there is write-activity going on (uploads, renames, ...)
+
+note: folder-thumbnails are selected during filesystem indexing, so periodic rescans can be used to keep them accurate as images are uploaded/deleted (or manually do a rescan with the `reload` button in the controlpanel)
+
+config file example:
+
+```yaml
+[global]
+  re-maxage: 3600
+
+[/pics]
+  /mnt/nas/pics
+  flags:
+    scan: 900
+```
 
 
 ## upload rules
@@ -1365,6 +1501,26 @@ you can also set transaction limits which apply per-IP and per-volume, but these
 
 notes:
 * `vmaxb` and `vmaxn` requires either the `e2ds` volflag or `-e2dsa` global-option
+
+config file example:
+
+```yaml
+[/inc]
+  /mnt/nas/uploads
+  accs:
+    w: *    # anyone can upload here
+    rw: ed  # only user "ed" can read-write
+  flags:
+    e2ds:      # filesystem indexing is required for many of these:
+    sz: 1k-3m  # accept upload only if filesize in this range
+    df: 4g     # free disk space cannot go lower than this
+    vmaxb: 1g  # volume can never exceed 1 GiB
+    vmaxn: 4k  # ...or 4000 files, whichever comes first
+    nosub      # must upload to toplevel folder
+    lifetime: 300   # uploads are deleted after 5min
+    maxn: 250,3600  # each IP can upload 250 files in 1 hour
+    maxb: 1g,300    # each IP can upload 1 GiB over 5 minutes
+```
 
 
 ## compress uploads
@@ -1411,9 +1567,23 @@ this can instead be kept in a single place using the `--hist` argument, or the `
 * `--hist ~/.cache/copyparty -v ~/music::r:c,hist=-` sets `~/.cache/copyparty` as the default place to put volume info, but `~/music` gets the regular `.hist` subfolder (`-` restores default behavior)
 
 note:
+* putting the hist-folders on an SSD is strongly recommended for performance
 * markdown edits are always stored in a local `.hist` subdirectory
 * on windows the volflag path is cyglike, so `/c/temp` means `C:\temp` but use regular paths for `--hist`
   * you can use cygpaths for volumes too, `-v C:\Users::r` and `-v /c/users::r` both work
+
+config file example:
+
+```yaml
+[global]
+  hist: ~/.cache/copyparty  # put db/thumbs/etc. here by default
+
+[/pics]
+  /mnt/nas/pics
+  flags:
+    hist: -  # restore the default (/mnt/nas/pics/.hist/)
+    hist: /mnt/nas/cache/pics/  # can be absolute path
+```
 
 
 ## metadata from audio files
@@ -1466,6 +1636,18 @@ copyparty can invoke external programs to collect additional metadata for files 
 
 if something doesn't work, try `--mtag-v` for verbose error messages
 
+config file example; note that `mtp` is an additive option so all of the mtp options will take effect:
+
+```yaml
+[/music]
+  /mnt/nas/music
+  flags:
+    mtp: .bpm=~/bin/audio-bpm.py  # assign ".bpm" (numeric) with script
+    mtp: key=f,t5,~/bin/audio-key.py  # force/overwrite, 5sec timeout
+    mtp: ext=an,~/bin/file-ext.py  # will only run on non-audio files
+    mtp: arch,built,ver,orig=an,eexe,edll,~/bin/exe.py  # only exe/dll
+```
+
 
 ## event hooks
 
@@ -1494,13 +1676,35 @@ the PUSH and REQ examples have `t3` (timeout after 3 seconds) because they block
 
 see [zmq-recv.py](https://github.com/9001/copyparty/blob/hovudstraum/bin/zmq-recv.py) if you need something to receive the messages with
 
+config file example; note that the hooks are additive options, so all of the xau options will take effect:
+
+```yaml
+[global]
+  xau: zmq:pub:tcp://*:5556`  # send a PUB to any/all connected SUB clients
+  xau: t3,zmq:push:tcp://*:5557`  # send PUSH to exactly one connected PULL cli
+  xau: t3,j,zmq:req:tcp://localhost:5555`  # send REQ to the connected REP cli
+```
+
 
 ### upload events
 
 the older, more powerful approach ([examples](./bin/mtag/)):
 
 ```
--v /mnt/inc:inc:w:c,mte=+x1:c,mtp=x1=ad,kn,/usr/bin/notify-send
+-v /mnt/inc:inc:w:c,e2d,e2t,mte=+x1:c,mtp=x1=ad,kn,/usr/bin/notify-send
+```
+
+that was the commandline example; here's the config file example:
+
+```yaml
+[/inc]
+  /mnt/inc
+  accs:
+    w: *
+  flags:
+    e2d, e2t  # enable indexing of uploaded files and their tags
+    mte: +x1
+    mtp: x1=ad,kn,/usr/bin/notify-send
 ```
 
 so filesystem location `/mnt/inc` shared at `/inc`, write-only for everyone, appending `x1` to the list of tags to index (`mte`), and using `/usr/bin/notify-send` to "provide" tag `x1` for any filetype (`ad`) with kill-on-timeout disabled (`kn`)
@@ -1513,6 +1717,8 @@ note that this is way more complicated than the new [event hooks](#event-hooks) 
 * only trigger on new unique files, not dupes
 
 note that it will occupy the parsing threads, so fork anything expensive (or set `kn` to have copyparty fork it for you) -- otoh if you want to intentionally queue/singlethread you can combine it with `--mtag-mt 1`
+
+for reference, if you were to do this using event hooks instead, it would be like this: `-e2d --xau notify-send,hello,--`
 
 
 ## handlers
@@ -1846,7 +2052,7 @@ change the association of a file extension
 
 using commandline args, you can do something like `--mime gif=image/jif` and `--mime ts=text/x.typescript` (can be specified multiple times)
 
-in a config-file, this is the same as:
+in a config file, this is the same as:
 
 ```yaml
 [global]
