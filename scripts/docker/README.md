@@ -57,6 +57,8 @@ most editions support `x86`, `x86_64`, `armhf`, `aarch64`, `ppc64le`, `s390x`
 * `dj` doesn't run on `ppc64le`, `s390x`, `armhf`
 * `iv` doesn't run on `ppc64le`, `s390x`
 
+> NOTE: the following editions are unfinished experiments, and not published anywhere: djd djf djff dju
+
 
 ## detecting bpm and musical key
 
