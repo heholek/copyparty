@@ -1,5 +1,5 @@
 #!/bin/sh
-# usage: ./bubblewrap.sh ./copyparty-sfx.py ....
+# usage: ./bubbleparty.sh ./copyparty-sfx.py ....
 bwrap \
   --unshare-all \
   --ro-bind /usr /usr \
