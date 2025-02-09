@@ -1521,6 +1521,8 @@ redefine behavior with plugins ([examples](./bin/handlers/))
 
 replace 404 and 403 errors with something completely different (that's it for now)
 
+as for client-side stuff, there is [plugins for modifying UI/UX](./contrib/plugins/)
+
 
 ## ip auth
 
