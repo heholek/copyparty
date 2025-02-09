@@ -79,5 +79,5 @@ cd /mnt/nas/music/.hist
 * run copyparty in a chroot, preventing any accidental file access
 * creates bindmounts for /bin, /lib, and so on, see `sysdirs=`
 
-# [`bubblewrap.sh`](bubblewrap.sh)
+# [`bubbleparty.sh`](bubbleparty.sh)
 * run copyparty in an isolated process, preventing any accidental file access and more
