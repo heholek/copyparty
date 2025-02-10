@@ -9,7 +9,7 @@ function eject_cb() {
     if (t.indexOf('can be safely unplugged') < 0 && t.indexOf('Device can be removed') < 0)
         return toast.err(30, 'usb eject failed:\n\n' + t);
 
-    toast.ok(5, esc(t.replace(/ - /g, '\n\n')));
+    toast.ok(5, esc(t.replace(/ - /g, '\n\n')).trim());
     usbclick(); setTimeout(usbclick, 10);
 };
 
@@ -19,12 +19,14 @@ function add_eject_2(a) {
         return;
 
     var v = aw[2],
-        k = 'umount_' + v;
+        k = 'umount_' + v,
+        o = ebi(k);
 
-    qsr('#' + k);
+    if (o)
+        o.parentNode.removeChild(o);
+
     a.appendChild(mknod('span', k, '⏏'), a);
-
-    var o = ebi(k);
+    o = ebi(k);
     o.style.cssText = 'position:absolute; right:1em; margin-top:-.2em; font-size:1.3em';
     o.onclick = function (e) {
         ev(e);
@@ -38,8 +40,9 @@ function add_eject_2(a) {
 };
 
 function add_eject() {
-    for (var a of QSA('#treeul a[href^="/usb/"]'))
-        add_eject_2(a);
+    var o = QSA('#treeul a[href^="/usb/"]');
+    for (var a = o.length - 1; a > 0; a--)
+        add_eject_2(o[a]);
 };
 
 (function() {

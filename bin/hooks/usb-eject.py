@@ -14,13 +14,13 @@ remove those flashdrives, then boy howdy are you in the right place :D
 put usb-eject.js in the webroot (or somewhere else http-accessible)
 then run copyparty with these args:
 
-   -v /run/media/ed:/usb:A:c,hist=/tmp/junk
+   -v /run/media/egon:/usb:A:c,hist=/tmp/junk
    --xm=c1,bin/hooks/usb-eject.py
    --js-browser=/usb-eject.js
 
 which does the following respectively,
 
-  * share all of /run/media/ed as /usb with admin for everyone
+  * share all of /run/media/egon as /usb with admin for everyone
      and put the histpath somewhere it won't cause trouble
   * run the usb-eject hook with stdout redirect to the web-ui
   * add the complementary usb-eject.js to the browser
@@ -31,15 +31,24 @@ which does the following respectively,
 def main():
     try:
         label = sys.argv[1].split(":usb-eject:")[1].split(":")[0]
-        mp = "/run/media/ed/" + label
+        mp = "/run/media/egon/" + label
         # print("ejecting [%s]... " % (mp,), end="")
         mp = os.path.abspath(os.path.realpath(mp.encode("utf-8")))
         st = os.lstat(mp)
         if not stat.S_ISDIR(st.st_mode):
             raise Exception("not a regular directory")
 
-        cmd = [b"gio", b"mount", b"-e", mp]
-        print(sp.check_output(cmd).decode("utf-8", "replace").strip())
+        # if you're running copyparty as root (thx for the faith)
+        # you'll need something like this to make dbus talkative
+        cmd = b"sudo -u egon DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus gio mount -e"
+
+        # but if copyparty and the ui-session is running
+        # as the same user (good) then this is plenty
+        cmd = b"gio mount -e"
+
+        cmd = cmd.split(b" ") + [mp]
+        ret = sp.check_output(cmd).decode("utf-8", "replace")
+        print(ret.strip() or (label + " can be safely unplugged"))
 
     except Exception as ex:
         print("unmount failed: %r" % (ex,))
