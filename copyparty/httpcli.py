@@ -191,7 +191,7 @@ class HttpCli(object):
         self.is_vproxied = False
         self.in_hdr_recv = True
         self.headers: dict[str, str] = {}
-        self.mode = " "
+        self.mode = " "  # http verb
         self.req = " "
         self.http_ver = ""
         self.hint = ""
@@ -731,10 +731,10 @@ class HttpCli(object):
                 return self.handle_unlock() and self.keepalive
             elif self.mode == "MKCOL":
                 return self.handle_mkcol() and self.keepalive
-            elif self.mode == "MOVE":
-                return self.handle_move() and self.keepalive
+            elif self.mode in ("MOVE", "COPY"):
+                return self.handle_cpmv() and self.keepalive
             else:
-                raise Pebkac(400, 'invalid HTTP mode "{0}"'.format(self.mode))
+                raise Pebkac(400, 'invalid HTTP verb "{0}"'.format(self.mode))
 
         except Exception as ex:
             if not isinstance(ex, Pebkac):
@@ -1776,6 +1776,12 @@ class HttpCli(object):
             if "%" in self.req:
                 self.log("  `-- %r" % (self.vpath,))
 
+        if self.args.no_dav:
+            raise Pebkac(405, "WebDAV is disabled in server config")
+
+        if not self.can_write:
+            raise Pebkac(401, "authenticate")
+
         try:
             return self._mkdir(self.vpath, True)
         except Pebkac as ex:
@@ -1785,14 +1791,35 @@ class HttpCli(object):
             self.reply(b"", ex.code)
             return True
 
-    def handle_move(self) -> bool:
+    def handle_cpmv(self) -> bool:
         dst = self.headers["destination"]
-        dst = re.sub("^https?://[^/]+", "", dst).lstrip()
-        dst = unquotep(dst)
-        if not self._mv(self.vpath, dst.lstrip("/")):
-            return False
 
-        return True
+        # dolphin (KIO/6.10) "webdav://127.0.0.1:3923/a/b.txt"
+        dst = re.sub("^[a-zA-Z]+://[^/]+", "", dst).lstrip()
+
+        if self.is_vproxied and dst.startswith(self.args.SRS):
+            dst = dst[len(self.args.RS) :]
+
+        if self.do_log:
+            self.log("%s %s  --//>  %s @%s" % (self.mode, self.req, dst, self.uname))
+            if "%" in self.req:
+                self.log("  `-- %r" % (self.vpath,))
+
+        if self.args.no_dav:
+            raise Pebkac(405, "WebDAV is disabled in server config")
+
+        dst = unquotep(dst)
+
+        # overwrite=True is default; rfc4918 9.8.4
+        overwrite = self.headers.get("overwrite", "").lower() != "f"
+
+        try:
+            fun = self._cp if self.mode == "COPY" else self._mv
+            return fun(self.vpath, dst.lstrip("/"), overwrite)
+        except Pebkac as ex:
+            if ex.code == 403:
+                ex.code = 401
+            raise
 
     def _applesan(self) -> bool:
         if self.args.dav_mac or "Darwin/" not in self.ua:
@@ -5441,6 +5468,8 @@ class HttpCli(object):
 
     def handle_rm(self, req: list[str]) -> bool:
         if not req and not self.can_delete:
+            if self.mode == "DELETE" and self.uname == "*":
+                raise Pebkac(401, "authenticate")  # webdav
             raise Pebkac(403, "'delete' not allowed for user " + self.uname)
 
         if self.args.no_del:
@@ -5475,14 +5504,22 @@ class HttpCli(object):
         if not dst:
             raise Pebkac(400, "need dst vpath")
 
-        return self._mv(self.vpath, dst.lstrip("/"))
+        return self._mv(self.vpath, dst.lstrip("/"), False)
 
-    def _mv(self, vsrc: str, vdst: str) -> bool:
+    def _mv(self, vsrc: str, vdst: str, overwrite: bool) -> bool:
         if self.args.no_mv:
             raise Pebkac(403, "the rename/move feature is disabled in server config")
 
-        self.asrv.vfs.get(vsrc, self.uname, True, False, True)
-        self.asrv.vfs.get(vdst, self.uname, False, True)
+        # `handle_cpmv` will catch 403 from these and raise 401
+        svn, srem = self.asrv.vfs.get(vsrc, self.uname, True, False, True)
+        dvn, drem = self.asrv.vfs.get(vdst, self.uname, False, True)
+
+        if overwrite:
+            dabs = dvn.canonical(drem)
+            if bos.path.exists(dabs):
+                self.log("overwriting %s" % (dabs,))
+                self.asrv.vfs.get(vdst, self.uname, False, True, False, True)
+                wunlink(self.log, dabs, dvn.flags)
 
         x = self.conn.hsrv.broker.ask("up2k.handle_mv", self.uname, self.ip, vsrc, vdst)
         self.loud_reply(x.get(), status=201)
@@ -5498,14 +5535,21 @@ class HttpCli(object):
         if not dst:
             raise Pebkac(400, "need dst vpath")
 
-        return self._cp(self.vpath, dst.lstrip("/"))
+        return self._cp(self.vpath, dst.lstrip("/"), False)
 
-    def _cp(self, vsrc: str, vdst: str) -> bool:
+    def _cp(self, vsrc: str, vdst: str, overwrite: bool) -> bool:
         if self.args.no_cp:
             raise Pebkac(403, "the copy feature is disabled in server config")
 
-        self.asrv.vfs.get(vsrc, self.uname, True, False)
-        self.asrv.vfs.get(vdst, self.uname, False, True)
+        svn, srem = self.asrv.vfs.get(vsrc, self.uname, True, False)
+        dvn, drem = self.asrv.vfs.get(vdst, self.uname, False, True)
+
+        if overwrite:
+            dabs = dvn.canonical(drem)
+            if bos.path.exists(dabs):
+                self.log("overwriting %s" % (dabs,))
+                self.asrv.vfs.get(vdst, self.uname, False, True, False, True)
+                wunlink(self.log, dabs, dvn.flags)
 
         x = self.conn.hsrv.broker.ask("up2k.handle_cp", self.uname, self.ip, vsrc, vdst)
         self.loud_reply(x.get(), status=201)
