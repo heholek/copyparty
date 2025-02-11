@@ -1794,7 +1794,7 @@ class HttpCli(object):
     def handle_cpmv(self) -> bool:
         dst = self.headers["destination"]
 
-        # dolphin (KIO/6.10) "webdav://127.0.0.1:3923/a/b.txt"
+        # dolphin (kioworker/6.10) "webdav://127.0.0.1:3923/a/b.txt"
         dst = re.sub("^[a-zA-Z]+://[^/]+", "", dst).lstrip()
 
         if self.is_vproxied and dst.startswith(self.args.SRS):
@@ -4836,9 +4836,12 @@ class HttpCli(object):
         # that the client is not a graphical browser
         if (
             rc == 403
-            and not self.pw
-            and not self.ua.startswith("Mozilla/")
+            and self.uname == "*"
             and "sec-fetch-site" not in self.headers
+            and (
+                not self.ua.startswith("Mozilla/")
+                or (self.args.dav_ua1 and self.args.dav_ua1.search(self.ua))
+            )
         ):
             rc = 401
             self.out_headers["WWW-Authenticate"] = 'Basic realm="a"'
