@@ -2806,7 +2806,9 @@ class AuthSrv(object):
         zs = "c ihead ohead mtm mtp on403 on404 xac xad xar xau xiu xban xbc xbd xbr xbu xm"
         lst = set(zs.split())
         askip = set("a v c vc cgen exp_lg exp_md theme".split())
-        fskip = set("exp_lg exp_md mv_re_r mv_re_t rm_re_r rm_re_t".split())
+
+        t = "exp_lg exp_md ext_th_d mv_re_r mv_re_t rm_re_r rm_re_t srch_re_dots srch_re_nodot"
+        fskip = set(t.split())
 
         # keymap from argv to vflag
         amap = vf_bmap()

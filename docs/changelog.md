@@ -1,4 +1,43 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0209-2331  `v1.16.12`  RTT
+
+## 🧪 new features
+
+* show rtt (network latency to server, including request processing time) in the top status text d27f1104 
+  * and log the client-reported RTT to serverlog 20ddeb6e
+* remember file selection when changing folders c7db08ed
+  * good for when you accidentally navigate elsewhere
+* option to restrict download-as-zip/tar to admins-only c87af9e8
+* #135 add [bubbleparty](https://github.com/9001/copyparty/blob/hovudstraum/bin/README.md#bubblepartysh), thx @coderofsalvation! 3582a100
+  * runs copyparty in a [sandbox](https://github.com/containers/bubblewrap), making it harder to gain unintended access through bugs in python or copyparty
+  * better alternative to [prisonparty](https://github.com/9001/copyparty/tree/hovudstraum/bin#prisonpartysh), more similar to [the sandboxing in the nixos package](https://github.com/9001/copyparty/blob/7dda77dcb/contrib/nixos/modules/copyparty.nix#L232-L272)
+* new plugin: [quickmove](https://github.com/9001/copyparty/blob/hovudstraum/contrib/plugins/quickmove.js) 46f9e9ef
+  * adds hotkey `W` to quickly move selected files into a subfolder
+* #133 new plugin: [graft-thumbs.js](https://github.com/9001/copyparty/blob/hovudstraum/contrib/plugins/graft-thumbs.js) 6c202eff
+  * in folders with foobar.mp3 and foobar.png, can copy the thumbnail from the png to the jpg (and then hide the png)
+* handlers: add [http-redirect example](https://github.com/9001/copyparty/blob/hovudstraum/bin/handlers/redirect.py) 22cbd2db
+* add [ping.html](https://github.com/9001/copyparty/blob/hovudstraum/srv/ping.html) 7de9d15a 910797cc
+
+## 🩹 bugfixes
+
+* improve iPad detection so they get opus instead of mp3 12dcea4f
+
+## 🔧 other changes
+
+* safeguard against accidental config loss cd71b505
+  * while no copyparty servers have ended up in this unfortunate situation yet (afaik), be proactive and borrow some experience from other docker-based services
+* readme: improve config examples 32e90859
+* improve serverlog entries regarding 403s b020fd4a
+* #132 mention fuse permissions in readme d9d2a092
+* traefik-example: fix disconnect during big uploads 6a9ffe7e
+* try to show an appropriate warning for media that the browser doesn't support playing 4ef35263
+  * was an attempt at detecting iphones failing to play high-color-precision webm files, but safari doesn't seem to realize itself that playback has failed, ah well 
+* copyparty.exe: update to python 3.12.9
+* update deps: dompurify 3.2.4
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0127-0140  `v1.16.11`  fix no-acode
 
 ## 🧪 new features
