@@ -6294,19 +6294,40 @@ var thegrid = (function () {
 		var html = [],
 			svgs = new Set(),
 			max_svgs = CHROME ? 500 : 5000,
+			need_ext = !r.thumbs || !!ext_th,
+			use_ext_th = r.thumbs && ext_th,
 			files = QSA('#files>tbody>tr>td:nth-child(2) a[id]');
 
 		for (var a = 0, aa = files.length; a < aa; a++) {
 			var ao = files[a],
 				ohref = esc(ao.getAttribute('href')),
 				href = ohref.split('?')[0],
+				ext = '',
 				name = uricom_dec(vsplit(href)[1]),
 				ref = ao.getAttribute('id'),
 				isdir = href.endsWith('/'),
 				ac = isdir ? ' class="dir"' : '',
 				ihref = ohref;
 
-			if (r.thumbs) {
+			if (need_ext && href != "#") {
+				var ar = href.split('.');
+				if (ar.length > 1)
+					ar.shift();
+
+				ar.reverse();
+				for (var b = 0; b < Math.min(2, ar.length); b++) {
+					if (ar[b].length > 7)
+						break;
+
+					ext = ar[b] + '.' + ext;
+				}
+				ext = (ext || 'unk.').slice(0, -1);
+			}
+
+			if (use_ext_th && ext_th[ext]) {
+				ihref = ext_th[ext];
+			}
+			else if (r.thumbs) {
 				ihref = addq(ihref, 'th=' + (have_webp ? 'w' : 'j'));
 				if (!r.crop)
 					ihref += 'f';
@@ -6319,22 +6340,6 @@ var thegrid = (function () {
 				ihref = SR + '/.cpr/ico/folder';
 			}
 			else {
-				var ar = href.split('.');
-				if (ar.length > 1)
-					ar = ar.slice(1);
-
-				ihref = '';
-				ar.reverse();
-				for (var b = 0; b < ar.length; b++) {
-					if (ar[b].length > 7)
-						break;
-
-					ihref = ar[b] + '.' + ihref;
-				}
-				if (!ihref) {
-					ihref = 'unk.';
-				}
-				var ext = ihref.slice(0, -1);
 				if (!svgs.has(ext)) {
 					if (svgs.size < max_svgs)
 						svgs.add(ext);

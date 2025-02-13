@@ -664,6 +664,8 @@ enabling `multiselect` lets you click files to select them, and then shift-click
 * `multiselect` is mostly intended for phones/tablets, but the `sel` option in the `[⚙️] settings` tab is better suited for desktop use, allowing selection by CTRL-clicking and range-selection with SHIFT-click, all without affecting regular clicking
   * the `sel` option can be made default globally with `--gsel` or per-volume with volflag `gsel`
 
+to show `/icons/exe.png` as the thumbnail for all .exe files, `--ext-th=exe=/icons/exe.png` (optionally as a volflag)
+
 config file example:
 
 ```yaml
@@ -678,6 +680,7 @@ config file example:
   flags:
     dthumb   # disable ALL thumbnails and audio transcoding
     dvthumb  # only disable video thumbnails
+    ext-th:  exe=/ico/exe.png  # /ico/exe.png is the thumbnail of *.exe
     th-covers:  folder.png,folder.jpg,cover.png,cover.jpg  # the default
 ```
 

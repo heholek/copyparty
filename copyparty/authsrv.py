@@ -1406,7 +1406,7 @@ class AuthSrv(object):
             flags[name] = True
             return
 
-        zs = "mtp on403 on404 xbu xau xiu xbc xac xbr xar xbd xad xm xban"
+        zs = "ext_th mtp on403 on404 xbu xau xiu xbc xac xbr xar xbd xad xm xban"
         if name not in zs.split():
             if value is True:
                 t = "└─add volflag [{}] = {}  ({})"
@@ -1999,7 +1999,7 @@ class AuthSrv(object):
 
             # append additive args from argv to volflags
             hooks = "xbu xau xiu xbc xac xbr xar xbd xad xm xban".split()
-            for name in "mtp on404 on403".split() + hooks:
+            for name in "ext_th mtp on404 on403".split() + hooks:
                 self._read_volflag(
                     vol.vpath, vol.flags, name, getattr(self.args, name), True
                 )
@@ -2029,6 +2029,16 @@ class AuthSrv(object):
 
                     ncmds.append(ocmd)
                 vol.flags[hn] = ncmds
+
+            ext_th = vol.flags["ext_th_d"] = {}
+            etv = "(?)"
+            try:
+                for etv in vol.flags.get("ext_th") or []:
+                    k, v = etv.split("=")
+                    ext_th[k] = v
+            except:
+                t = "WARNING: volume [/%s]: invalid value specified for ext-th: %s"
+                self.log(t % (vol.vpath, etv), 3)
 
             # d2d drops all database features for a volume
             for grp, rm in [["d2d", "e2d"], ["d2t", "e2t"], ["d2d", "e2v"]]:
@@ -2391,6 +2401,7 @@ class AuthSrv(object):
                 "have_del": not self.args.no_del,
                 "have_unpost": int(self.args.unpost),
                 "have_emp": self.args.emp,
+                "ext_th": vf.get("ext_th_d") or {},
                 "sb_md": "" if "no_sb_md" in vf else (vf.get("md_sbf") or "y"),
                 "sba_md": vf.get("md_sba") or "",
                 "sba_lg": vf.get("lg_sba") or "",

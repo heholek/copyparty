@@ -109,6 +109,7 @@ def vf_cmap() -> dict[str, str]:
     for k in (
         "exp_lg",
         "exp_md",
+        "ext_th",
         "mte",
         "mth",
         "mtp",
@@ -221,6 +222,7 @@ flagcats = {
         "crop": "center-cropping (y/n/fy/fn)",
         "th3x": "3x resolution (y/n/fy/fn)",
         "convt": "conversion timeout in seconds",
+        "ext_th=s=/b.png": "use /b.png as thumbnail for file-extension s",
     },
     "handlers\n(better explained in --help-handlers)": {
         "on404=PY": "handle 404s by executing PY file",
