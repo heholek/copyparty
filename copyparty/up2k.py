@@ -4628,12 +4628,12 @@ class Up2k(object):
         Optional[str],
         Optional[int],
         Optional[int],
-        Optional[str],
+        str,
         Optional[int],
     ]:
         cur = self.cur.get(ptop)
         if not cur:
-            return None, None, None, None, None, None
+            return None, None, None, None, "", None
 
         rd, fn = vsplit(vrem)
         q = "select w, mt, sz, ip, at from up where rd=? and fn=? limit 1"
@@ -4647,7 +4647,7 @@ class Up2k(object):
         if hit:
             wark, ftime, fsize, ip, at = hit
             return cur, wark, ftime, fsize, ip, at
-        return cur, None, None, None, None, None
+        return cur, None, None, None, "", None
 
     def _forget_file(
         self,
