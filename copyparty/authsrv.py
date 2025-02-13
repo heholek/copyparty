@@ -1289,10 +1289,10 @@ class AuthSrv(object):
                 # one or more bools before the final flag; eat them
                 n1, uname = uname.split(",", 1)
                 for _, vp, _, _ in vols:
-                    self._read_volflag(flags[vp], n1, True, False)
+                    self._read_volflag(vp, flags[vp], n1, True, False)
 
             for _, vp, _, _ in vols:
-                self._read_volflag(flags[vp], uname, cval, False)
+                self._read_volflag(vp, flags[vp], uname, cval, False)
 
             return
 
@@ -1379,12 +1379,26 @@ class AuthSrv(object):
 
     def _read_volflag(
         self,
+        vpath: str,
         flags: dict[str, Any],
         name: str,
         value: Union[str, bool, list[str]],
         is_list: bool,
     ) -> None:
+        if name not in flagdescs:
+            name = name.lower()
+
+            # volflags are snake_case, but a leading dash is the removal operator
+            if name not in flagdescs and "-" in name[1:]:
+                name = name[:1] + name[1:].replace("-", "_")
+
         desc = flagdescs.get(name.lstrip("-"), "?").replace("\n", " ")
+
+        if not name:
+            self._e("└─unreadable-line")
+            t = "WARNING: the config for volume [/%s] indicated that a volflag was to be defined, but the volflag name was blank"
+            self.log(t % (vpath,), 3)
+            return
 
         if re.match("^-[^-]+$", name):
             t = "└─unset volflag [{}]  ({})"
@@ -1556,6 +1570,17 @@ class AuthSrv(object):
             vol.all_aps.sort(key=lambda x: len(x[0]), reverse=True)
             vol.all_vps.sort(key=lambda x: len(x[0]), reverse=True)
             vol.root = vfs
+
+        zs = "neversymlink"
+        k_ign = set(zs.split())
+        for vol in vfs.all_vols.values():
+            unknown_flags = set()
+            for k, v in vol.flags.items():
+                if k not in flagdescs and k not in k_ign:
+                    unknown_flags.add(k)
+            if unknown_flags:
+                t = "WARNING: the config for volume [/%s] has unrecognized volflags; will ignore: '%s'"
+                self.log(t % (vol.vpath, "', '".join(unknown_flags)), 3)
 
         enshare = self.args.shr
         shr = enshare[1:-1]
@@ -1975,7 +2000,9 @@ class AuthSrv(object):
             # append additive args from argv to volflags
             hooks = "xbu xau xiu xbc xac xbr xar xbd xad xm xban".split()
             for name in "mtp on404 on403".split() + hooks:
-                self._read_volflag(vol.flags, name, getattr(self.args, name), True)
+                self._read_volflag(
+                    vol.vpath, vol.flags, name, getattr(self.args, name), True
+                )
 
             for hn in hooks:
                 cmds = vol.flags.get(hn)

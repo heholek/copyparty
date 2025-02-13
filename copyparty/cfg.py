@@ -5,6 +5,9 @@ from __future__ import print_function, unicode_literals
 zs = "a c e2d e2ds e2dsa e2t e2ts e2tsr e2v e2vp e2vu ed emp i j lo mcr mte mth mtm mtp nb nc nid nih nth nw p q s ss sss v z zv"
 onedash = set(zs.split())
 
+# verify that all volflags are documented here:
+# grep volflag= __main__.py | sed -r 's/.*volflag=//;s/\).*//' | sort | uniq | while IFS= read -r x; do grep -E "\"$x(=[^ \"]+)?\": \"" cfg.py || printf '%s\n' "$x"; done
+
 
 def vf_bmap() -> dict[str, str]:
     """argv-to-volflag: simple bools"""
@@ -179,8 +182,11 @@ flagcats = {
         "e2dsa": "scans all folders for new files on startup; also sets -e2d",
         "e2t": "enable multimedia indexing; makes it possible to search for tags",
         "e2ts": "scan existing files for tags on startup; also sets -e2t",
-        "e2tsa": "delete all metadata from DB (full rescan); also sets -e2ts",
+        "e2tsr": "delete all metadata from DB (full rescan); also sets -e2ts",
         "d2ts": "disables metadata collection for existing files",
+        "e2v": "verify integrity on startup by hashing files and comparing to db",
+        "e2vu": "when e2v fails, update the db (assume on-disk files are good)",
+        "e2vp": "when e2v fails, panic and quit copyparty",
         "d2ds": "disables onboot indexing, overrides -e2ds*",
         "d2t": "disables metadata collection, overrides -e2t*",
         "d2v": "disables file verification, overrides -e2v*",
@@ -200,6 +206,8 @@ flagcats = {
         "srch_excl": "exclude search results with URL matching this regex",
     },
     'database, audio tags\n"mte", "mth", "mtp", "mtm" all work the same as -mte, -mth, ...': {
+        "mte=artist,title": "media-tags to index/display",
+        "mth=fmt,res,ac": "media-tags to hide by default",
         "mtp=.bpm=f,audio-bpm.py": 'uses the "audio-bpm.py" program to\ngenerate ".bpm" tags from uploads (f = overwrite tags)',
         "mtp=ahash,vhash=media-hash.py": "collects two tags at once",
     },
@@ -235,8 +243,12 @@ flagcats = {
         "grid": "show grid/thumbnails by default",
         "gsel": "select files in grid by ctrl-click",
         "sort": "default sort order",
+        "nsort": "natural-sort of leading digits in filenames",
+        "hsortn": "number of sort-rules to add to media URLs",
         "unlist": "dont list files matching REGEX",
         "html_head=TXT": "includes TXT in the <head>, or @PATH for file at PATH",
+        "tcolor=#fc0": "theme color (a hint for webbrowsers, discord, etc.)",
+        "nodirsz": "don't show total folder size",
         "robots": "allows indexing by search engines (default)",
         "norobots": "kindly asks search engines to leave",
         "no_sb_md": "disable js sandbox for markdown files",
@@ -249,12 +261,33 @@ flagcats = {
         "lg_sba": "value of iframe allow-prop for *logue-sandbox",
         "nohtml": "return html and markdown as text/html",
     },
+    "opengraph (discord embeds)": {
+        "og": "enable OG (disables hotlinking)",
+        "og_site": "sitename; defaults to --name, disable with '-'",
+        "og_desc": "description text for all files; disable with '-'",
+        "og_th=jf": "thumbnail format; j / jf / jf3 / w / w3 / ...",
+        "og_title_a": "audio title format; default: {{ artist }} - {{ title }}",
+        "og_title_v": "video title format; default: {{ title }}",
+        "og_title_i": "image title format; default: {{ title }}",
+        "og_title=foo": "fallback title if there's nothing in the db",
+        "og_s_title": "force default title; do not read from tags",
+        "og_tpl": "custom html; see --og-tpl in --help",
+        "og_no_head": "you want to add tags manually with og_tpl",
+        "og_ua": "if defined: only send OG html if useragent matches this regex",
+    },
+    "textfiles": {
+        "exp": "enable textfile expansion; see --help-exp",
+        "exp_md": "placeholders to expand in markdown files; see --help",
+        "exp_lg": "placeholders to expand in prologue/epilogue; see --help",
+    },
     "others": {
         "dots": "allow all users with read-access to\nenable the option to show dotfiles in listings",
         "fk=8": 'generates per-file accesskeys,\nwhich are then required at the "g" permission;\nkeys are invalidated if filesize or inode changes',
         "fka=8": 'generates slightly weaker per-file accesskeys,\nwhich are then required at the "g" permission;\nnot affected by filesize or inode numbers',
+        "rss": "allow '?rss' URL suffix (experimental)",
         "ups_who=2": "restrict viewing the list of recent uploads",
         "zip_who=2": "restrict access to download-as-zip/tar",
+        "nopipe": "disable race-the-beam (download unfinished uploads)",
         "mv_retry": "ms-windows: timeout for renaming busy files",
         "rm_retry": "ms-windows: timeout for deleting busy files",
         "davauth": "ask webdav clients to login for all folders",
@@ -264,3 +297,10 @@ flagcats = {
 
 
 flagdescs = {k.split("=")[0]: v for tab in flagcats.values() for k, v in tab.items()}
+
+
+if True:  # so it gets removed in release-builds
+    for fun in [vf_bmap, vf_cmap, vf_vmap]:
+        for k in fun().values():
+            if k not in flagdescs:
+                raise Exception("undocumented volflag: " + k)
