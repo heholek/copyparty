@@ -2381,6 +2381,7 @@ class AuthSrv(object):
                 "sb_lg": "" if "no_sb_lg" in vf else (vf.get("lg_sbf") or "y"),
             }
             js_htm = {
+                "SPINNER": self.args.spinner,
                 "s_name": self.args.bname,
                 "have_up2k_idx": "e2d" in vf,
                 "have_acode": not self.args.no_acode,

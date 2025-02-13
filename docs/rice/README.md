@@ -48,6 +48,20 @@ and if you want to have a monospace font in the fancy markdown editor, do this:
 NB: `<textarea id="mt">` and `<div id="mtr">` in the regular markdown editor must have the same font; none of the suggestions above will cause any issues but keep it in mind if you're getting creative
 
 
+# boring loader spinner
+
+replace the 🌲 with a spinning circle using commandline args:
+
+`--spinner ',padding:0;border-radius:9em;border:.2em solid #444;border-top:.2em solid #fc0'`
+
+or config file example:
+
+```yaml
+[global]
+  spinner: ,padding:0;border-radius:9em;border:.2em solid #444;border-top:.2em solid #fc0
+```
+
+
 # `<head>`
 
 to add stuff to the html `<head>`, for example a css `<link>` or `<meta>` tags, use either the global-option `--html-head` or the volflag `html_head`

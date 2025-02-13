@@ -8188,11 +8188,18 @@ var treectl = (function () {
 })();
 
 
+var m = SPINNER.split(','),
+	SPINNER_CSS = m.length < 2 ? '' : SPINNER.slice(m[0].length + 1);
+SPINNER = m[0];
+
+
 function enspin(sel) {
 	despin(sel);
 	var d = mknod('div');
 	d.className = 'dumb_loader_thing';
-	d.innerHTML = '🌲';
+	d.innerHTML = SPINNER;
+	if (SPINNER_CSS)
+		d.style.cssText = SPINNER_CSS;
 	var tgt = QS(sel);
 	tgt.insertBefore(d, tgt.childNodes[0]);
 }
