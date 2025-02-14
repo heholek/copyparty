@@ -1,13 +1,6 @@
 #!/bin/ash
 set -ex
 
-# patch musl cve https://www.openwall.com/lists/musl/2025/02/13/1
-apk add -U grep
-grep -aobRE 'euckr[^\w]ksc5601[^\w]ksx1001[^\w]cp949[^\w]' /lib/ | awk -F: '$2>999{printf "%d %s\n",$2,$1}' | while read ofs fn
-do printf -- '-----\0-------\0-------\0-----\0' | dd bs=1 iflag=fullblock conv=notrunc seek=$ofs of=$fn; done 2>&1 |
-tee /dev/stderr | grep -E copied, | wc -l | grep '^2$'
-apk del grep
-
 # cleanup for flavors with python build steps (dj/iv)
 rm -rf /var/cache/apk/* /root/.cache
 
