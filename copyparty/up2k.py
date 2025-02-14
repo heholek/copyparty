@@ -1081,7 +1081,7 @@ class Up2k(object):
         ft = "\033[0;32m{}{:.0}"
         ff = "\033[0;35m{}{:.0}"
         fv = "\033[0;36m{}:\033[90m{}"
-        zs = "html_head mv_re_r mv_re_t rm_re_r rm_re_t srch_re_dots srch_re_nodot"
+        zs = "ext_th_d html_head mv_re_r mv_re_t rm_re_r rm_re_t srch_re_dots srch_re_nodot"
         fx = set(zs.split())
         fd = vf_bmap()
         fd.update(vf_cmap())

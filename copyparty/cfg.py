@@ -156,7 +156,8 @@ flagcats = {
         "daw": "enable full WebDAV write support (dangerous);\nPUT-operations will now \033[1;31mOVERWRITE\033[0;35m existing files",
         "nosub": "forces all uploads into the top folder of the vfs",
         "magic": "enables filetype detection for nameless uploads",
-        "gz": "allows server-side gzip of uploads with ?gz (also c,xz)",
+        "gz": "allows server-side gzip compression of uploads with ?gz",
+        "xz": "allows server-side lzma compression of uploads with ?xz",
         "pk": "forces server-side compression, optional arg: xz,9",
     },
     "upload rules": {

@@ -1389,8 +1389,16 @@ class AuthSrv(object):
             name = name.lower()
 
             # volflags are snake_case, but a leading dash is the removal operator
-            if name not in flagdescs and "-" in name[1:]:
-                name = name[:1] + name[1:].replace("-", "_")
+            stripped = name.lstrip("-")
+            zi = len(name) - len(stripped)
+            if zi > 1:
+                t = "WARNING: the config for volume [/%s] specified a volflag with multiple leading hyphens (%s); use one hyphen to remove, or zero hyphens to add a flag. Will now enable flag [%s]"
+                self.log(t % (vpath, name, stripped), 3)
+                name = stripped
+                zi = 0
+
+            if stripped not in flagdescs and "-" in stripped:
+                name = ("-" * zi) + stripped.replace("-", "_")
 
         desc = flagdescs.get(name.lstrip("-"), "?").replace("\n", " ")
 
@@ -1576,6 +1584,11 @@ class AuthSrv(object):
         for vol in vfs.all_vols.values():
             unknown_flags = set()
             for k, v in vol.flags.items():
+                stripped = k.lstrip("-")
+                if k != stripped and stripped not in vol.flags:
+                    t = "WARNING: the config for volume [/%s] tried to remove volflag [%s] by specifying [%s] but that volflag was not already set"
+                    self.log(t % (vol.vpath, stripped, k), 3)
+                k = stripped
                 if k not in flagdescs and k not in k_ign:
                     unknown_flags.add(k)
             if unknown_flags:
