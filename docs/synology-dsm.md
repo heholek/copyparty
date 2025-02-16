@@ -115,6 +115,16 @@ note that if you only want to share some folders inside your data volume, and no
 
 
 
+## updating
+
+to update to a new copyparty version: `Container Manager` » `Images` » `Update available` » `Update`
+
+* DSM checks for updates every 12h; you can force a check with `sudo /var/packages/ContainerManager/target/tool/image_upgradable_checker`
+
+* there is no auto-update feature, and beware that watchtower does not support DSM
+
+
+
 ## regarding ram usage
 
 the ram usage indicator in both `Docker` and `Container Manager` is misleading  because it also counts the kernel disk cache which makes the number insanely high -- the synology resource monitor shows the correct values, usually less than 100 MiB
