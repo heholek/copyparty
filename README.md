@@ -160,8 +160,8 @@ enable thumbnails (images/audio/video), media indexing, and audio transcoding by
 * **MacOS:** `port install py-Pillow ffmpeg`
 * **MacOS** (alternative): `brew install pillow ffmpeg`
 * **Windows:** `python -m pip install --user -U Pillow`
-  * install python and ffmpeg manually; do not use `winget` or `Microsoft Store` (it breaks $PATH)
-  * copyparty.exe comes with `Pillow` and only needs `ffmpeg`
+  * install [python](https://www.python.org/downloads/windows/) and [ffmpeg](#optional-dependencies) manually; do not use `winget` or `Microsoft Store` (it breaks $PATH)
+  * copyparty.exe comes with `Pillow` and only needs [ffmpeg](#optional-dependencies) for mediatags/videothumbs
 * see [optional dependencies](#optional-dependencies) to enable even more features
 
 running copyparty without arguments (for example doubleclicking it on Windows) will give everyone read/write access to the current folder; you may want [accounts and volumes](#accounts-and-volumes)
@@ -426,6 +426,14 @@ upgrade notes
 * copyparty seems to think I am using http, even though the URL is https
   * your reverse-proxy is not sending the `X-Forwarded-Proto: https` header; this could be because your reverse-proxy itself is confused. Ensure that none of the intermediates (such as cloudflare) are terminating https before the traffic hits your entrypoint
 
+* thumbnails are broken (you get a colorful square which says the filetype instead)
+  * you need to install `FFmpeg` or `Pillow`; see [thumbnails](#thumbnails)
+
+* thumbnails are broken (some images appear, but other files just get a blank box, and/or the broken-image placeholder)
+  * probably due to a reverse-proxy messing with the request URLs and stripping the query parameters (`?th=w`), so check your URL rewrite rules
+  * could also be due to incorrect caching settings in reverse-proxies and/or CDNs, so make sure that nothing is set to ignore the query string
+  * could also be due to misbehaving privacy-related browser extensions, so try to disable those
+
 * i want to learn python and/or programming and am considering looking at the copyparty source code in that occasion
   * ```bash
      _|  _      __   _  _|_
@@ -656,6 +664,7 @@ press `g` or `田` to toggle grid-view instead of the file listing  and `t` togg
 it does static images with Pillow / pyvips / FFmpeg, and uses FFmpeg for video files, so you may want to `--no-thumb` or maybe just `--no-vthumb` depending on how dangerous your users are
 * pyvips is 3x faster than Pillow, Pillow is 3x faster than FFmpeg
 * disable thumbnails for specific volumes with volflag `dthumb` for all, or `dvthumb` / `dathumb` / `dithumb` for video/audio/images only
+* for installing FFmpeg on windows, see [optional dependencies](#optional-dependencies)
 
 audio files are converted into spectrograms using FFmpeg unless you `--no-athumb` (and some FFmpeg builds may need `--th-ff-swr`)
 
@@ -2607,6 +2616,8 @@ enable sending [zeromq messages](#zeromq) from event-hooks: `pyzmq`
 enable [smb](#smb-server) support (**not** recommended): `impacket==0.12.0`
 
 `pyvips` gives higher quality thumbnails than `Pillow` and is 320% faster, using 270% more ram: `sudo apt install libvips42 && python3 -m pip install --user -U pyvips`
+
+to install FFmpeg on Windows, grab [a recent build](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z) -- you need `ffmpeg.exe` and `ffprobe.exe` from inside the `bin` folder; copy them into `C:\Windows\System32` or any other folder that's in your `%PATH%`
 
 
 ### dependency chickenbits
