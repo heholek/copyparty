@@ -404,6 +404,9 @@ upgrade notes
 
 "frequently" asked questions
 
+* can I change the 🌲 spinning pine-tree loading animation?
+  * [yeah...](https://github.com/9001/copyparty/tree/hovudstraum/docs/rice#boring-loader-spinner) :-(
+
 * is it possible to block read-access to folders unless you know the exact URL for a particular file inside?
   * yes, using the [`g` permission](#accounts-and-volumes), see the examples there
   * you can also do this with linux filesystem permissions; `chmod 111 music` will make it possible to access files and folders inside the `music` folder but not list the immediate contents -- also works with other software, not just copyparty
