@@ -2173,6 +2173,11 @@ function goto(dest) {
 }
 
 
+var m = SPINNER.split(','),
+	SPINNER_CSS = SPINNER.slice(1 + m[0].length);
+SPINNER = m[0];
+
+
 var SBW, SBH;  // scrollbar size
 (function () {
 	var el = mknod('div');
@@ -8191,11 +8196,6 @@ var treectl = (function () {
 	r.onscroll = onscroll;
 	return r;
 })();
-
-
-var m = SPINNER.split(','),
-	SPINNER_CSS = m.length < 2 ? '' : SPINNER.slice(m[0].length + 1);
-SPINNER = m[0];
 
 
 function enspin(sel) {
