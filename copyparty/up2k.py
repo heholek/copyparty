@@ -557,6 +557,7 @@ class Up2k(object):
             else:
                 # important; not deferred by db_act
                 timeout = self._check_lifetimes()
+                timeout = min(self._check_forget_ip(), timeout)
                 try:
                     if self.args.shr:
                         timeout = min(self._check_shares(), timeout)
@@ -616,6 +617,43 @@ class Up2k(object):
 
                 for v in vols:
                     volage[v] = now
+
+    def _check_forget_ip(self) -> float:
+        now = time.time()
+        timeout = now + 9001
+        for vp, vol in sorted(self.vfs.all_vols.items()):
+            maxage = vol.flags["forget_ip"]
+            if not maxage:
+                continue
+
+            cur = self.cur.get(vol.realpath)
+            if not cur:
+                continue
+
+            cutoff = now - maxage * 60
+
+            for _ in range(2):
+                q = "select ip, at from up where ip > '' order by +at limit 1"
+                hits = cur.execute(q).fetchall()
+                if not hits:
+                    break
+
+                remains = hits[0][1] - cutoff
+                if remains > 0:
+                    timeout = min(timeout, now + remains)
+                    break
+
+                q = "update up set ip = '' where ip > '' and at <= %d"
+                cur.execute(q % (cutoff,))
+                zi = cur.rowcount
+                cur.connection.commit()
+
+                t = "forget-ip(%d) removed %d IPs from db [/%s]"
+                self.log(t % (maxage, zi, vol.vpath))
+
+            timeout = min(timeout, now + 900)
+
+        return timeout
 
     def _check_lifetimes(self) -> float:
         now = time.time()
@@ -3789,7 +3827,7 @@ class Up2k(object):
             db_ip = ""
         else:
             # plugins may expect this to look like an actual IP
-            db_ip = "1.1.1.1" if self.args.no_db_ip else ip
+            db_ip = "1.1.1.1" if "no_db_ip" in vflags else ip
 
         sql = "insert into up values (?,?,?,?,?,?,?)"
         v = (dwark, int(ts), sz, rd, fn, db_ip, int(at or 0))

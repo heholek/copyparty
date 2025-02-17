@@ -43,6 +43,7 @@ def vf_bmap() -> dict[str, str]:
         "gsel",
         "hardlink",
         "magic",
+        "no_db_ip",
         "no_sb_md",
         "no_sb_lg",
         "nsort",
@@ -73,6 +74,7 @@ def vf_vmap() -> dict[str, str]:
     }
     for k in (
         "dbd",
+        "forget_ip",
         "hsortn",
         "html_head",
         "lg_sbf",
@@ -198,6 +200,8 @@ flagcats = {
         "nohash=\\.iso$": "skips hashing file contents if path matches *.iso",
         "noidx=\\.iso$": "fully ignores the contents at paths matching *.iso",
         "noforget": "don't forget files when deleted from disk",
+        "forget_ip=43200": "forget uploader-IP after 30 days (GDPR)",
+        "no_db_ip": "never store uploader-IP in the db; disables unpost",
         "fat32": "avoid excessive reindexing on android sdcardfs",
         "dbd=[acid|swal|wal|yolo]": "database speed-durability tradeoff",
         "xlink": "cross-volume dupe detection / linking (dangerous)",

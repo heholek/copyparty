@@ -98,6 +98,7 @@ turn almost any device into a file server with resumable uploads/downloads using
     * [prometheus](#prometheus) - metrics/stats can be enabled
     * [other extremely specific features](#other-extremely-specific-features) - you'll never find a use for these
         * [custom mimetypes](#custom-mimetypes) - change the association of a file extension
+        * [GDPR compliance](#GDPR-compliance) - imagine using copyparty professionally...
         * [feature chickenbits](#feature-chickenbits) - buggy feature? rip it out
 * [packages](#packages) - the party might be closer than you think
     * [arch package](#arch-package) - now [available on aur](https://aur.archlinux.org/packages/copyparty) maintained by [@icxes](https://github.com/icxes)
@@ -2101,6 +2102,18 @@ in a config file, this is the same as:
 ```
 
 run copyparty with `--mimes` to list all the default mappings
+
+
+### GDPR compliance
+
+imagine using copyparty professionally...  **TINLA/IANAL; EU laws are hella confusing**
+
+* remember to disable logging, or configure logrotation to an acceptable timeframe with `-lo cpp-%Y-%m%d.txt.xz` or similar
+
+* if running with the database enabled (recommended), then have it forget uploader-IPs after some time using `--forget-ip 43200`
+  * don't set it too low; [unposting](#unpost) a file is no longer possible after this takes effect
+
+* if you actually *are* a lawyer then I'm open for feedback, would be fun
 
 
 ### feature chickenbits
