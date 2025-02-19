@@ -897,6 +897,10 @@ function up2k_init(subtle) {
             uc.ow = 0;
         swrite('u2ow', uc.ow);
         set_ow();
+        if (uc.ow && !has(perms, 'delete'))
+            toast.warn(10, L.u_enoow, 'noow');
+        else if (toast.tag == 'noow')
+            toast.hide();
     };
     set_ow();
 

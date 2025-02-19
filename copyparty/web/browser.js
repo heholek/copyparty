@@ -539,6 +539,7 @@ var Ls = {
 		"u_ewrite": 'you do not have write-access to this folder',
 		"u_eread": 'you do not have read-access to this folder',
 		"u_enoi": 'file-search is not enabled in server config',
+		"u_enoow": "overwrite will not work here; need Delete-permission",
 		"u_badf": 'These {0} files (of {1} total) were skipped, possibly due to filesystem permissions:\n\n',
 		"u_blankf": 'These {0} files (of {1} total) are blank / empty; upload them anyways?\n\n',
 		"u_just1": '\nMaybe it works better if you select just one file',
@@ -1140,6 +1141,7 @@ var Ls = {
 		"u_ewrite": 'du har ikke skrivetilgang i denne mappen',
 		"u_eread": 'du har ikke lesetilgang i denne mappen',
 		"u_enoi": 'filsøk er deaktivert i serverkonfigurasjonen',
+		"u_enoow": "kan ikke overskrive filer her (Delete-rettigheten er nødvendig)",
 		"u_badf": 'Disse {0} filene (av totalt {1}) kan ikke leses, kanskje pga rettighetsproblemer i filsystemet på datamaskinen din:\n\n',
 		"u_blankf": 'Disse {0} filene (av totalt {1}) er blanke / uten innhold; ønsker du å laste dem opp uansett?\n\n',
 		"u_just1": '\nFunker kanskje bedre hvis du bare tar én fil om gangen',
@@ -1741,6 +1743,7 @@ var Ls = {
 		"u_ewrite": '你对这个文件夹没有写入权限',
 		"u_eread": '你对这个文件夹没有读取权限',
 		"u_enoi": '文件搜索在服务器配置中未启用',
+		"u_enoow": "无法覆盖此处的文件；需要删除权限", //m
 		"u_badf": '这些 {0} 个文件（共 {1} 个）被跳过，可能是由于文件系统权限：\n\n',
 		"u_blankf": '这些 {0} 个文件（共 {1} 个）是空白的；是否仍然上传？\n\n',
 		"u_just1": '\n也许如果你只选择一个文件会更好',

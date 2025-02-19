@@ -1,4 +1,38 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0213-2057  `v1.16.13`  configure with confidence
+
+## 🧪 new features
+
+* make the config-parser more helpful regarding volflags a255db70
+  * if an unrecognized volflag is specified, print a warning instead of silently ignoring it
+  * understand volflag-names with Uppercase and/or kebab-case (dashes), and not just snake_case (underscores)
+  * improve `--help-flags` to mention and explain all available flags
+* #136 WebDAV: support COPY 62ee7f69
+  * also support overwrite of existing target files (default-enabled according to the spec)
+    * the user must have the delete-permission to actually replace files
+* option to specify custom icons for certain file extensions 7e4702cf
+  * see `--ext-th` mentioned briefly in the [thumbnails section](https://github.com/9001/copyparty/#thumbnails)
+* option to replace the loading-spinner animation 685f0869
+  * including how to [make it exceptionally normal-looking](https://github.com/9001/copyparty/tree/hovudstraum/docs/rice#boring-loader-spinner)
+
+## 🩹 bugfixes
+
+* #136 WebDAV fixes 62ee7f69
+  * COPY/MOVE/MKCOL: challenge clients to provide the password as necessary
+    * most clients only need this in PROPFIND, but KDE-Dolphin is more picky
+  * MOVE: support `webdav://` Destination prefix as used by Dolphin, probably others
+* #136 WebDAV: improve support for KDE-Dolphin as client 9d769027
+  * it masquerades as a graphical browser yet still expects 401, so special-case it with a useragent scan
+
+## 🔧 other changes
+
+* Docker-only: quick hacky fix for the [musl CVE](https://www.openwall.com/lists/musl/2025/02/13/1) until the official fix is out 4d6626b0
+  * the docker images will be rebuilt when `musl-1.2.5-r9.apk` is released, in 6~24h or so
+  * until then, there is no support for reading korean XML files when running in docker
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0209-2331  `v1.16.12`  RTT
 
 ## 🧪 new features
