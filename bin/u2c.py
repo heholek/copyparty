@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import print_function, unicode_literals
 
-S_VERSION = "2.9"
-S_BUILD_DT = "2025-01-27"
+S_VERSION = "2.10"
+S_BUILD_DT = "2025-02-19"
 
 """
 u2c.py: upload to copyparty
@@ -807,7 +807,9 @@ def handshake(ar, file, search):
     else:
         if ar.touch:
             req["umod"] = True
-        if ar.ow:
+        if ar.owo:
+            req["replace"] = "mt"
+        elif ar.ow:
             req["replace"] = True
 
     file.recheck = False
@@ -1538,6 +1540,7 @@ source file/folder selection uses rsync syntax, meaning that:
     ap.add_argument("--ok", action="store_true", help="continue even if some local files are inaccessible")
     ap.add_argument("--touch", action="store_true", help="if last-modified timestamps differ, push local to server (need write+delete perms)")
     ap.add_argument("--ow", action="store_true", help="overwrite existing files instead of autorenaming")
+    ap.add_argument("--owo", action="store_true", help="overwrite existing files if server-file is older")
     ap.add_argument("--spd", action="store_true", help="print speeds for each file")
     ap.add_argument("--version", action="store_true", help="show version and exit")
 

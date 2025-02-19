@@ -780,8 +780,11 @@ the up2k UI is the epitome of polished intuitive experiences:
 * "parallel uploads" specifies how many chunks to upload at the same time
 * `[🏃]` analysis of other files should continue while one is uploading
 * `[🥔]` shows a simpler UI for faster uploads from slow devices
+* `[🛡️]` decides when to overwrite existing files on the server
+  * `🛡️` = never (generate a new filename instead)
+  * `🕒` = overwrite if the server-file is older
+  * `♻️` = always overwrite if the files are different
 * `[🎲]` generate random filenames during upload
-* `[📅]` preserve last-modified timestamps; server times will match yours
 * `[🔎]` switch between upload and [file-search](#file-search) mode
   * ignore `[🔎]` if you add files by dragging them into the browser
 

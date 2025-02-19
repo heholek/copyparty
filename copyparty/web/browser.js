@@ -151,7 +151,8 @@ var Ls = {
 
 		"ul_par": "parallel uploads:",
 		"ut_rand": "randomize filenames",
-		"ut_u2ts": "copy the last-modified timestamp$Nfrom your filesystem to the server",
+		"ut_u2ts": "copy the last-modified timestamp$Nfrom your filesystem to the server\">📅",
+		"ut_ow": "overwrite existing files on the server?$N🛡️: never (will generate a new filename instead)$N🕒: overwrite if server-file is older than yours$N♻️: always overwrite if the files are different",
 		"ut_mt": "continue hashing other files while uploading$N$Nmaybe disable if your CPU or HDD is a bottleneck",
 		"ut_ask": 'ask for confirmation before upload starts">💭',
 		"ut_pot": "improve upload speed on slow devices$Nby making the UI less complex",
@@ -751,7 +752,8 @@ var Ls = {
 
 		"ul_par": "samtidige handl.:",
 		"ut_rand": "finn opp nye tilfeldige filnavn",
-		"ut_u2ts": "gi filen på serveren samme$Ntidsstempel som lokalt hos deg",
+		"ut_u2ts": "gi filen på serveren samme$Ntidsstempel som lokalt hos deg\">📅",
+		"ut_ow": "overskrive eksisterende filer på serveren?$N🛡️: aldri (finner på et nytt filnavn istedenfor)$N🕒: overskriv hvis serverens fil er eldre$N♻️: alltid, gitt at innholdet er forskjellig",
 		"ut_mt": "fortsett å befare køen mens opplastning foregår$N$Nskru denne av dersom du har en$Ntreg prosessor eller harddisk",
 		"ut_ask": 'bekreft filutvalg før opplastning starter">💭',
 		"ut_pot": "forbedre ytelsen på trege enheter ved å$Nforenkle brukergrensesnittet",
@@ -1351,7 +1353,8 @@ var Ls = {
 
 		"ul_par": "并行上传：",
 		"ut_rand": "随机化文件名",
-		"ut_u2ts": "将最后修改的时间戳$N从你的文件系统复制到服务器",
+		"ut_u2ts": "将最后修改的时间戳$N从你的文件系统复制到服务器\">📅",
+		"ut_ow": "覆盖服务器上的现有文件？$N🛡️: 从不（会生成一个新文件名）$N🕒: 服务器文件较旧则覆盖$N♻️: 总是覆盖，如果文件内容不同", //m
 		"ut_mt": "在上传时继续哈希其他文件$N$N如果你的 CPU 或硬盘是瓶颈，可能需要禁用",
 		"ut_ask": '上传开始前询问确认">💭',
 		"ut_pot": "通过简化 UI 来$N提高慢设备上的上传速度",
@@ -1918,8 +1921,8 @@ ebi('op_up2k').innerHTML = (
 	'			<label for="u2rand" tt="' + L.ut_rand + '">🎲</label>\n' +
 	'		</td>\n' +
 	'		<td class="c" rowspan="2">\n' +
-	'			<input type="checkbox" id="u2ts" />\n' +
-	'			<label for="u2ts" tt="' + L.ut_u2ts + '">📅</a>\n' +
+	'			<input type="checkbox" id="u2ow" />\n' +
+	'			<label for="u2ow" tt="' + L.ut_ow + '">?</a>\n' +
 	'		</td>\n' +
 	'		<td class="c" data-perm="read" data-dep="idx" rowspan="2">\n' +
 	'			<input type="checkbox" id="fsearch" />\n' +
@@ -2037,6 +2040,7 @@ ebi('op_cfg').innerHTML = (
 	'	<h3>' + L.cl_uopts + '</h3>\n' +
 	'	<div>\n' +
 	'		<a id="ask_up" class="tgl btn" href="#" tt="' + L.ut_ask + '</a>\n' +
+	'		<a id="u2ts" class="tgl btn" href="#" tt="' + L.ut_u2ts + '</a>\n' +
 	'		<a id="umod" class="tgl btn" href="#" tt="' + L.cut_umod + '</a>\n' +
 	'		<a id="hashw" class="tgl btn" href="#" tt="' + L.cut_mt + '</a>\n' +
 	'		<a id="u2turbo" class="tgl btn ttb" href="#" tt="' + L.cut_turbo + '</a>\n' +

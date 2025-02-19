@@ -885,6 +885,21 @@ function up2k_init(subtle) {
     bcfg_bind(uc, 'upnag', 'upnag', false, set_upnag);
     bcfg_bind(uc, 'upsfx', 'upsfx', false, set_upsfx);
 
+    uc.ow = parseInt(sread('u2ow', ['0', '1', '2']) || u2ow);
+    uc.owt = ['🛡️', '🕒', '♻️'];
+    function set_ow() {
+        QS('label[for="u2ow"]').innerHTML = uc.owt[uc.ow];
+        ebi('u2ow').checked  = true; //cosmetic
+    }
+    ebi('u2ow').onclick = function (e) {
+        ev(e);
+        if (++uc.ow > 2)
+            uc.ow = 0;
+        swrite('u2ow', uc.ow);
+        set_ow();
+    };
+    set_ow();
+
     var st = {
         "files": [],
         "nfile": {
@@ -2633,6 +2648,13 @@ function up2k_init(subtle) {
             req.rand = true;
         else if (t.umod)
             req.umod = true;
+
+        if (!t.srch) {
+            if (uc.ow == 1)
+                req.replace = 'mt';
+            if (uc.ow == 2)
+                req.replace = true;
+        }
 
         xhr.open('POST', t.purl, true);
         xhr.responseType = 'text';

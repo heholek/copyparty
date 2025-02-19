@@ -3373,7 +3373,17 @@ class Up2k(object):
             return fname
 
         fp = djoin(fdir, fname)
-        if job.get("replace") and bos.path.exists(fp):
+
+        ow = job.get("replace") and bos.path.exists(fp)
+        if ow and "mt" in str(job["replace"]).lower():
+            mts = bos.stat(fp).st_mtime
+            mtc = job["lmod"]
+            if mtc < mts:
+                t = "will not overwrite; server %d sec newer than client; %d > %d %r"
+                self.log(t % (mts - mtc, mts, mtc, fp))
+                ow = False
+
+        if ow:
             self.log("replacing existing file at %r" % (fp,))
             cur = None
             ptop = job["ptop"]

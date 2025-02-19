@@ -1956,11 +1956,7 @@ class AuthSrv(object):
                 if vf not in vol.flags:
                     vol.flags[vf] = getattr(self.args, ga)
 
-            for k in ("nrand",):
-                if k not in vol.flags:
-                    vol.flags[k] = getattr(self.args, k)
-
-            zs = "forget_ip nrand u2abort ups_who zip_who"
+            zs = "forget_ip nrand u2abort u2ow ups_who zip_who"
             for k in zs.split():
                 if k in vol.flags:
                     vol.flags[k] = int(vol.flags[k])
@@ -2436,6 +2432,7 @@ class AuthSrv(object):
                 "u2j": self.args.u2j,
                 "u2sz": self.args.u2sz,
                 "u2ts": vf["u2ts"],
+                "u2ow": vf["u2ow"],
                 "frand": bool(vf.get("rand")),
                 "lifetime": vn.js_ls["lifetime"],
                 "u2sort": self.args.u2sort,
