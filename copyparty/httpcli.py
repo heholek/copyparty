@@ -1811,7 +1811,8 @@ class HttpCli(object):
         dst = unquotep(dst)
 
         # overwrite=True is default; rfc4918 9.8.4
-        overwrite = self.headers.get("overwrite", "").lower() != "f"
+        zs = self.headers.get("overwrite", "").lower()
+        overwrite = zs not in ["f", "false"]
 
         try:
             fun = self._cp if self.mode == "COPY" else self._mv
