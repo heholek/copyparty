@@ -7503,7 +7503,7 @@ var treectl = (function () {
 		xhr.open('GET', addq(dst, 'tree=' + top + (r.dots ? '&dots' : '') + k), true);
 		xhr.onload = xhr.onerror = r.recvtree;
 		xhr.send();
-		enspin('#tree');
+		enspin('t');
 	}
 
 	r.recvtree = function () {
@@ -7551,7 +7551,7 @@ var treectl = (function () {
 				}
 			}
 		}
-		despin('#tree');
+		qsr('#dlt_t');
 
 		try {
 			QS('#treeul>li>a+a').textContent = '[root]';
@@ -7711,8 +7711,8 @@ var treectl = (function () {
 		r.sb_msg = false;
 		r.nextdir = xhr.top;
 		clearTimeout(mpl.t_eplay);
-		enspin('#tree');
-		enspin(thegrid.en ? '#gfiles' : '#files');
+		enspin('t');
+		enspin('f');
 		window.removeEventListener('scroll', r.tscroll);
 	}
 
@@ -7807,9 +7807,8 @@ var treectl = (function () {
 		}
 
 		r.gentab(this.top, res);
-		despin('#tree');
-		despin('#files');
-		despin('#gfiles');
+		qsr('#dlt_t');
+		qsr('#dlt_f');
 
 		var lg0 = res.logues ? res.logues[0] || "" : "",
 			lg1 = res.logues ? res.logues[1] || "" : "",
@@ -8198,22 +8197,15 @@ var treectl = (function () {
 })();
 
 
-function enspin(sel) {
-	despin(sel);
-	var d = mknod('div');
+function enspin(i) {
+	i = 'dlt_' + i;
+	if (ebi(i))
+		return;
+	var d = mknod('div', i, SPINNER);
 	d.className = 'dumb_loader_thing';
-	d.innerHTML = SPINNER;
 	if (SPINNER_CSS)
 		d.style.cssText = SPINNER_CSS;
-	var tgt = QS(sel);
-	tgt.insertBefore(d, tgt.childNodes[0]);
-}
-
-
-function despin(sel) {
-	var o = QSA(sel + '>.dumb_loader_thing');
-	for (var a = o.length - 1; a >= 0; a--)
-		o[a].parentNode.removeChild(o[a]);
+	document.body.appendChild(d);
 }
 
 
@@ -8697,7 +8689,17 @@ var mukey = (function () {
 
 var light, theme, themen;
 var settheme = (function () {
-	var ax = 'abcdefghijklmnopqrstuvwx';
+	var r = {},
+		ax = 'abcdefghijklmnopqrstuvwx',
+		tre = '🌲',
+		chldr = !SPINNER_CSS && SPINNER == tre;
+
+	r.ldr = {
+		'4':['🌴'],
+		'5':['🌭', 'padding:0 0 .7em .7em;filter:saturate(3)'],
+		'6':['📞', 'padding:0;filter:brightness(2) sepia(1) saturate(3) hue-rotate(60deg)'],
+		'7':['▲', 'font-size:3em'], //cp437
+	};
 
 	theme = sread('cpp_thm') || 'a';
 	if (!/^[a-x][yz]/.exec(theme))
@@ -8727,13 +8729,19 @@ var settheme = (function () {
 		ebi('themes').innerHTML = html.join('');
 		var btns = QSA('#themes a');
 		for (var a = 0; a < themes; a++)
-			btns[a].onclick = settheme;
+			btns[a].onclick = r.go;
+
+		if (chldr) {
+			var x = r.ldr[itheme] || [tre];
+			SPINNER = x[0];
+			SPINNER_CSS = x[1];
+		}
 
 		bcfg_set('light', light);
 		tt.att(ebi('themes'));
 	}
 
-	function settheme(e) {
+	r.go = function (e) {
 		var i = e;
 		try { ev(e); i = e.target.textContent; } catch (ex) { }
 		light = i % 2 == 1;
@@ -8746,7 +8754,7 @@ var settheme = (function () {
 	}
 
 	freshen();
-	return settheme;
+	return r;
 })();
 
 

@@ -1695,7 +1695,7 @@ html.y #tree.nowrap .ntree a+a:hover {
 	line-height: 0;
 }
 .dumb_loader_thing {
-	display: inline-block;
+	display: block;
 	margin: 1em .3em 1em 1em;
 	padding: 0 1.2em 0 0;
 	font-size: 4em;
@@ -1703,8 +1703,15 @@ html.y #tree.nowrap .ntree a+a:hover {
 	min-height: 1em;
 	opacity: 0;
 	animation: 1s linear .15s infinite forwards spin, .2s ease .15s 1 forwards fadein;
-	position: absolute;
+	position: fixed;
+	top: .3em;
 	z-index: 9;
+}
+#dlt_t {
+	left: 0;
+}
+#dlt_f {
+	right: .5em;
 }
 #files .cfg {
 	display: none;
