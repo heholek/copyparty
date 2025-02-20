@@ -131,6 +131,7 @@ symbol legend,
 | runs on Linux           | █ | ╱ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ |
 | runs on Macos           | █ |   | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ |   |
 | runs on FreeBSD         | █ |   |   | • | █ | █ | █ | • | █ | █ |   | █ |   |
+| runs on Risc-V          | █ |   |   | █ | █ | █ |   | • |   | █ |   |   |   |
 | portable binary         | █ | █ | █ |   |   | █ | █ |   |   | █ |   | █ | █ |
 | zero setup, just go     | █ | █ | █ |   |   | ╱ | █ |   |   | █ |   | ╱ | █ |
 | android app             | ╱ |   |   | █ | █ |   |   |   |   |   |   |   |   |

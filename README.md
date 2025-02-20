@@ -228,6 +228,7 @@ also see [comparison to similar software](./docs/versus.md)
   * ☑ [upnp / zeroconf / mdns / ssdp](#zeroconf)
   * ☑ [event hooks](#event-hooks) / script runner
   * ☑ [reverse-proxy support](https://github.com/9001/copyparty#reverse-proxy)
+  * ☑ cross-platform (Windows, Linux, Macos, Android, FreeBSD, arm32/arm64, ppc64le, s390x, risc-v/riscv64)
 * upload
   * ☑ basic: plain multipart, ie6 support
   * ☑ [up2k](#uploading): js, resumable, multithreaded
