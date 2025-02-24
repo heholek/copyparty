@@ -4438,7 +4438,7 @@ function read_dsort(txt) {
 		}
 	}
 	catch (ex) {
-		toast.warn(10, 'failed to apply default sort order [' + txt + ']:\n' + ex);
+		toast.warn(10, 'failed to apply default sort order [' + esc('' + txt) + ']:\n' + ex);
 		dsort = [['href', 1, '']];
 	}
 }
@@ -8379,7 +8379,7 @@ function mk_files_header(taglist) {
 		var tag = taglist[a],
 			c1 = tag.slice(0, 1).toUpperCase();
 
-		tag = c1 + tag.slice(1);
+		tag = esc(c1 + tag.slice(1));
 		if (c1 == '.')
 			tag = '<th name="tags/' + tag + '" sort="int"><span>' + tag.slice(1);
 		else
