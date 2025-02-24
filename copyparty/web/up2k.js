@@ -1319,7 +1319,7 @@ function up2k_init(subtle) {
         if (bad_files.length) {
             var msg = L.u_badf.format(bad_files.length, ntot);
             for (var a = 0, aa = Math.min(20, bad_files.length); a < aa; a++)
-                msg += '-- ' + bad_files[a][1] + '\n';
+                msg += '-- ' + esc(bad_files[a][1]) + '\n';
 
             msg += L.u_just1;
             return modal.alert(msg, function () {
@@ -1331,7 +1331,7 @@ function up2k_init(subtle) {
         if (nil_files.length) {
             var msg = L.u_blankf.format(nil_files.length, ntot);
             for (var a = 0, aa = Math.min(20, nil_files.length); a < aa; a++)
-                msg += '-- ' + nil_files[a][1] + '\n';
+                msg += '-- ' + esc(nil_files[a][1]) + '\n';
 
             msg += L.u_just1;
             return modal.confirm(msg, function () {
