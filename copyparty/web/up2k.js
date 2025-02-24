@@ -2073,8 +2073,8 @@ function up2k_init(subtle) {
                 try { orz(e); } catch (ex) { vis_exh(ex + '', 'up2k.js', '', '', ex); }
             };
             reader.onerror = function () {
-                var err = reader.error + '';
-                var handled = false;
+                var err = esc('' + reader.error),
+                    handled = false;
 
                 if (err.indexOf('NotReadableError') !== -1 || // win10-chrome defender
                     err.indexOf('NotFoundError') !== -1  // macos-firefox permissions
@@ -2298,7 +2298,7 @@ function up2k_init(subtle) {
         xhr.onerror = xhr.ontimeout = function () {
             console.log('head onerror, retrying', t.name, t);
             if (!toast.visible)
-                toast.warn(9.98, L.u_enethd + "\n\nfile: " + t.name, t);
+                toast.warn(9.98, L.u_enethd + "\n\nfile: " + esc(t.name), t);
 
             apop(st.busy.head, t);
             st.todo.head.unshift(t);
@@ -2373,7 +2373,7 @@ function up2k_init(subtle) {
                 return console.log('zombie handshake onerror', t.name, t);
 
             if (!toast.visible)
-                toast.warn(9.98, L.u_eneths + "\n\nfile: " + t.name, t);
+                toast.warn(9.98, L.u_eneths + "\n\nfile: " + esc(t.name), t);
 
             console.log('handshake onerror, retrying', t.name, t);
             apop(st.busy.handshake, t);
@@ -2478,7 +2478,7 @@ function up2k_init(subtle) {
                     var idx = t.hash.indexOf(missing[a]);
                     if (idx < 0)
                         return modal.alert('wtf negative index for hash "{0}" in task:\n{1}'.format(
-                            missing[a], JSON.stringify(t)));
+                            missing[a], esc(JSON.stringify(t))));
 
                     t.postlist.push(idx);
                     cbd[idx] = 0;
@@ -2833,7 +2833,7 @@ function up2k_init(subtle) {
                 xhr.bsent = 0;
 
                 if (!toast.visible)
-                    toast.warn(9.98, L.u_cuerr.format(snpart, Math.ceil(t.size / chunksize), t.name), t);
+                    toast.warn(9.98, L.u_cuerr.format(snpart, Math.ceil(t.size / chunksize), esc(t.name)), t);
 
                 t.nojoin = t.nojoin || t.postlist.length;  // maybe rproxy postsize limit
                 console.log('chunkpit onerror,', t.name, t);

@@ -64,7 +64,7 @@ onmessage = (d) => {
     };
     reader.onerror = function () {
         busy = false;
-        var err = reader.error + '';
+        var err = esc('' + reader.error);
 
         if (err.indexOf('NotReadableError') !== -1 || // win10-chrome defender
             err.indexOf('NotFoundError') !== -1  // macos-firefox permissions
