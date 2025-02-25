@@ -2632,7 +2632,7 @@ function up2k_init(subtle) {
                     return toast.err(0, L.u_ehsdf + "\n\n" + rsp.replace(/.*; /, ''));
 
                 err = t.t_uploading ? L.u_ehsfin : t.srch ? L.u_ehssrch : L.u_ehsinit;
-                xhrchk(xhr, err + "\n\nfile: " + t.name + "\n\nerror ", "404, target folder not found", "warn", t);
+                xhrchk(xhr, err + "\n\nfile: " + esc(t.name) + "\n\nerror ", "404, target folder not found", "warn", t);
             }
         }
         xhr.onload = function (e) {
@@ -2789,7 +2789,7 @@ function up2k_init(subtle) {
                     toast.inf(10, L.u_cbusy);
             }
             else {
-                xhrchk(xhr, L.u_cuerr2.format(snpart, Math.ceil(t.size / chunksize), t.name), "404, target folder not found (???)", "warn", t);
+                xhrchk(xhr, L.u_cuerr2.format(snpart, Math.ceil(t.size / chunksize), esc(t.name)), "404, target folder not found (???)", "warn", t);
                 chill(t);
             }
             orz2(xhr);
