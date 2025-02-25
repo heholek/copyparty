@@ -1078,26 +1078,28 @@ action_stack = (function () {
         var p1 = from.length,
             p2 = to.length;
 
-        while (p1-- > 0 && p2-- > 0)
+        while (p1 --> 0 && p2 --> 0)
             if (from[p1] != to[p2])
                 break;
 
-        if (car > ++p1) {
+        if (car > ++p1)
             car = p1;
-        }
 
         var txt = from.substring(car, p1)
         return {
             car: car,
-            cdr: ++p2,
+            cdr: p2 + (car && 1),
             txt: txt,
             cpos: cpos
         };
     }
 
     var undiff = function (from, change) {
+        var t1 = from.substring(0, change.car),
+            t2 = from.substring(change.cdr);
+
         return {
-            txt: from.substring(0, change.car) + change.txt + from.substring(change.cdr),
+            txt: t1 + change.txt + t2,
             cpos: change.cpos
         };
     }

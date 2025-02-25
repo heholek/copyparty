@@ -152,6 +152,8 @@ RE_HSAFE = re.compile(r"[\x00-\x1f<>\"'&]")  # search always much faster
 RE_HOST = re.compile(r"[^][0-9a-zA-Z.:_-]")  # search faster <=17ch
 RE_MHOST = re.compile(r"^[][0-9a-zA-Z.:_-]+$")  # match faster >=18ch
 RE_K = re.compile(r"[^0-9a-zA-Z_-]")  # search faster <=17ch
+RE_HR = re.compile(r"[<>\"'&]")
+RE_MDV = re.compile(r"(.*)\.([0-9]+\.[0-9]{3})(\.[Mm][Dd])$")
 
 UPARAM_CC_OK = set("doc move tree".split())
 
@@ -5969,7 +5971,7 @@ class HttpCli(object):
         # [num-backups, most-recent, hist-path]
         hist: dict[str, tuple[int, float, str]] = {}
         histdir = os.path.join(fsroot, ".hist")
-        ptn = re.compile(r"(.*)\.([0-9]+\.[0-9]{3})(\.[^\.]+)$")
+        ptn = RE_MDV
         try:
             for hfn in bos.listdir(histdir):
                 m = ptn.match(hfn)
@@ -6002,6 +6004,7 @@ class HttpCli(object):
 
         dirs = []
         files = []
+        ptn_hr = RE_HR
         for fn in ls_names:
             base = ""
             href = fn
@@ -6056,11 +6059,13 @@ class HttpCli(object):
                 zd.second,
             )
 
-            try:
-                ext = "---" if is_dir else fn.rsplit(".", 1)[1]
+            if is_dir:
+                ext = "---"
+            elif "." in fn:
+                ext = ptn_hr.sub("@", fn.rsplit(".", 1)[1])
                 if len(ext) > 16:
                     ext = ext[:16]
-            except:
+            else:
                 ext = "%"
 
             if add_fk and not is_dir:
