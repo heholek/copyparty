@@ -1,4 +1,31 @@
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
+# 2025-0219-2309  `v1.16.14`  overwrite by upload
+
+## 🧪 new features
+
+* #139 overwrite existing files by uploading over them e9f78ea7
+  * default-disabled; a new togglebutton in the upload-UI configures it
+  * can optionally compare last-modified-time and only overwrite older files
+* [GDPR compliance](https://github.com/9001/copyparty#GDPR-compliance) (maybe/probably) 4be0d426
+
+## 🩹 bugfixes
+
+* some cosmetic volflag stuff, all harmless b190e676
+  * disabling a volflag `foo` with `-foo` shows a warning that `-foo` was not a recognized volflag, but it still does the right thing
+  * some volflags give the *"unrecognized volflag, will ignore"* warning, but not to worry, they still work just fine:
+    * `xz` to allow serverside xz-compression of uploaded files 
+* the option to customize the loader-spinner would glitch out during the initial page load 7d7d5d6c
+
+## 🔧 other changes
+
+* [randpic.py](https://github.com/9001/copyparty/blob/hovudstraum/bin/handlers/randpic.py), new 404-handler example, returns a random pic from a folder 60d5f271
+* readme: [howto permanent cloudflare tunnel](https://github.com/9001/copyparty#permanent-cloudflare-tunnel) for easy hosting from home 2beb2acc
+* [synology-dsm](https://github.com/9001/copyparty/blob/hovudstraum/docs/synology-dsm.md): mention how to update the docker image 56ce5919
+* spinner improvements 6858cb06
+
+
+
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  
 # 2025-0213-2057  `v1.16.13`  configure with confidence
 
 ## 🧪 new features
